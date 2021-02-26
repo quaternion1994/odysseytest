@@ -1,0 +1,20 @@
+﻿syntax = "proto3";
+
+package library;
+
+service LibraryService {
+  rpc AddBook(AddBookRequest) returns (AddBookResponse)
+}
+
+message AddBookRequest {
+  message Author {
+    string name = 1;
+    string surname = 2;
+  }
+  string isbn = 1;
+  repeated Author authors = 2;
+}
+
+message AddBookResponse {
+  int64 id = 1;
+}

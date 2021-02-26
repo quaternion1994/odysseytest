@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Class1.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Class1.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc" Version="2.36.0" />
+    <PackageReference Include="Grpc.Core" Version="2.36.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.36.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
