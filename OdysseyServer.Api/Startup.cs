@@ -35,10 +35,10 @@ namespace OdysseyServer.Api
             app.UseRouting();
 
             app.UseAuthorization();
-            app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Odyssey API V1");

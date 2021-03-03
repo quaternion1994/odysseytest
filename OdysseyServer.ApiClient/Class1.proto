@@ -1,9 +1,10 @@
 ﻿syntax = "proto3";
+option csharp_namespace = "OdysseyServer.ApiClient";
 
 package library;
 
 service LibraryService {
-  rpc AddBook(AddBookRequest) returns (AddBookResponse)
+  rpc AddBook(AddBookRequest) returns (AddBookResponse);
 }
 
 message AddBookRequest {

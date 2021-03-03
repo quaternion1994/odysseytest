@@ -21,6 +21,6 @@ namespace OdysseyServer.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                }).ConfigureLogging(conf=>conf.AddDebug());
     }
 }
