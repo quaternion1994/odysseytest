@@ -8,12 +8,14 @@ namespace OdysseyServer.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Character> builder)
         {
-            builder.ToTable("Characters").HasKey(k => k.Id);
-
-            builder.HasMany(e => e.Abilities)
-                .WithOne(e => e.Character)
-                .HasForeignKey(p => p.CharacterId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.ToTable("Character");
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).HasColumnName("Id");
+            builder.Property(e => e.Name).HasColumnName("Name").IsRequired().HasMaxLength(100);
+            builder.Property(e => e.Level).HasColumnName("Level");
+            builder.Property(e => e.Power).HasColumnName("Power");
+            builder.Property(e => e.GearTier).HasColumnName("GearTier");
+            builder.Property(e => e.Xp).HasColumnName("Xp");
         }
     }
 }

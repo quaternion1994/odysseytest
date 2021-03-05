@@ -11,6 +11,7 @@ namespace OdysseyServer.Persistence.Entities
         public int Level { get; set; }
 
         public Guid CharacterId { get; set; }
-        public Character Character { get; set; }
+        public ICollection<CharacterAbilities> CharacterAbilities { get; set; }
+        public AbilityStat AbilityStat { get; set; }
     }
 }

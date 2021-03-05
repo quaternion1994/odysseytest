@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using OdysseyServer.Persistence.Entities;
+using OdysseyServer.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +11,18 @@ using System.Threading.Tasks;
 
 namespace OdysseyServer.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/character")]
     [ApiController]
     public class CharacterController : ControllerBase
     {
+        //private IMemoryCache _cache;
+        private ICharacterService _characterService;
+
+        public CharacterController(/*IMemoryCache cache*/ICharacterService characterService)
+        {
+            _characterService = characterService;
+            //_cache = cache;
+        }
         // GET: api/<CharacterController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -28,8 +39,26 @@ namespace OdysseyServer.Api.Controllers
 
         // POST api/<CharacterController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task Post([FromBody] object value)
         {
+            var ch = new Character
+            {
+                Name = "Yaroslav",
+                CharacterAbilities = null,
+                GearTier = 200,
+                Level = 1,
+                Power = 100,
+                Xp = 200
+            };
+            try
+            {
+                await _characterService.CreateCharacter(ch);
+            }
+            catch (Exception e)
+            {
+                e.ToString();
+            }
+           
         }
 
         // PUT api/<CharacterController>/5

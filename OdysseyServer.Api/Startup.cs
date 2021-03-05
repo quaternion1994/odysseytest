@@ -3,6 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OdysseyServer.Persistence;
+using Microsoft.EntityFrameworkCore;
+using OdysseyServer.Services;
+using OdysseyServer.Services.Contracts;
+using OdysseyServer.Persistence.Contracts;
+using OdysseyServer.Persistence.Repository;
+using OdysseyServer.Api.Middleware;
 
 namespace OdysseyServer.Api
 {
@@ -20,6 +27,11 @@ namespace OdysseyServer.Api
         {
             services.AddControllers();
             services.AddSwaggerGen();
+            services.AddDbContext<OdysseyDbContext>(options =>
+                options.UseSqlServer(Configuration["DbConfiguration:ConnectionStrings"]));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICharacterService, CharacterService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +48,7 @@ namespace OdysseyServer.Api
 
             app.UseAuthorization();
 
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwagger();

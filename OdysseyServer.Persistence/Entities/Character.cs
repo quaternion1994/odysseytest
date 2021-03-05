@@ -9,9 +9,9 @@ namespace OdysseyServer.Persistence.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int Power { get; set; }
-        public int XP { get; set; }
+        public int Xp { get; set; }
         public int Level { get; set; }
         public int GearTier { get; set; }
-        public ICollection<Ability> Abilities { get; set; }
+        public ICollection<CharacterAbilities> CharacterAbilities { get; set; }
     }
 }

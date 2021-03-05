@@ -8,19 +8,20 @@ using System.Text;
 
 namespace OdysseyServer.Persistence
 {
-    class OdysseyDbContext : DbContext
+    public class OdysseyDbContext : DbContext
     {
         public OdysseyDbContext([NotNull] DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-        }
-
         public virtual DbSet<Character> Characters { get; set; }
         public virtual DbSet<Ability> Abilities { get; set; }
+        public virtual DbSet<CharacterAbilities> CharacterAbilities { get; set; }
+        public virtual DbSet<AbilityStat> AbilityStat { get; set; }
+        public virtual DbSet<Group> Group { get; set; }
+        public virtual DbSet<CharacterGroups> CharacterGroups { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,8 +29,12 @@ namespace OdysseyServer.Persistence
 
             modelBuilder.ApplyConfiguration(new CharacterEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AbilityEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new CharacterAbilityConfiguration());
+            modelBuilder.ApplyConfiguration(new AbilityStatConfiguration());
+            modelBuilder.ApplyConfiguration(new GroupConfiguration());
+            modelBuilder.ApplyConfiguration(new CharacterGroupConfiguration());
 
-            modelBuilder.Seed();
+            //modelBuilder.Seed();
         }
     }
 }
