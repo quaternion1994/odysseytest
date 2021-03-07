@@ -43,7 +43,7 @@ namespace OdysseyServer.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post()
         {
-            var ability = new Ability
+            /*var ability = new Ability
             {
                 Level = 1,
                 RequiredLevel = 4,
@@ -53,9 +53,9 @@ namespace OdysseyServer.Api.Controllers
                     Attack = 10,
                     Defence = 20
                 }
-            };
-            /*var stream = Request.BodyReader.AsStream();
-            var person = Character.Parser.ParseFrom(stream);*/
+            };*/
+            var stream = Request.BodyReader.AsStream();
+            var ability = Ability.Parser.ParseFrom(stream);
             //seria
             await _abilityService.CreateAbility(ability);
 

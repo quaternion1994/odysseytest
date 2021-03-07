@@ -47,5 +47,10 @@ message Group
         string iconName = 3;
 }
 
+message AllGroup
+    {
+        repeated Group group = 1;
+}
+
 
 

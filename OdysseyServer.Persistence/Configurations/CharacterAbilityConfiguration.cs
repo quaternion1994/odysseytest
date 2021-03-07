@@ -14,6 +14,7 @@ namespace OdysseyServer.Persistence.Configurations
             builder.ToTable("CharacterAbilities");
 
             builder.HasKey(ca => new { ca.AbilityId, ca.CharacterId });
+            builder.Property(a => a.RowVersion).IsRowVersion();
 
             builder.HasOne(d => d.Character)
                 .WithMany(x => x.CharacterAbilities)

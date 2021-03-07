@@ -10,5 +10,6 @@ namespace OdysseyServer.Persistence.Entities
         public string Name { get; set; }
         public string IconName { get; set; }
         public ICollection<CharacterGroupsDbo> CharacterGroups { get; set; }
+        public byte[] RowVersion { get; set; }
     }
 }

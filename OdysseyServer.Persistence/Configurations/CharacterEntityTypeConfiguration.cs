@@ -16,6 +16,7 @@ namespace OdysseyServer.Persistence.Configurations
             builder.Property(e => e.Power).HasColumnName("Power");
             builder.Property(e => e.GearTier).HasColumnName("GearTier");
             builder.Property(e => e.Xp).HasColumnName("Xp");
+            builder.Property(a => a.RowVersion).IsRowVersion();
         }
     }
 }

@@ -10,5 +10,6 @@ namespace OdysseyServer.Persistence.Entities
         public AbilityDbo Ability { get; set; }       
         public long CharacterId { get; set; }
         public long AbilityId{ get; set; }
+        public byte[] RowVersion { get; set; }
     }
 }

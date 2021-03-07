@@ -22,6 +22,7 @@ namespace OdysseyServer.Services.Mappers
             CreateMap<AbilityStats, AbilityStatsDbo>();
             CreateMap<Group, GroupDbo>();
             CreateMap<GroupDbo, Group>();
+            CreateMap<AllGroupDbo, AllGroup>();
         }
     }
 }

@@ -12,5 +12,6 @@ namespace OdysseyServer.Persistence.Entities
         public int RequiredLevel { get; set; }
         public ICollection<CharacterAbilitiesDbo> CharacterAbilities { get; set; }
         public AbilityStatsDbo Stats { get; set; }
+        public byte[] RowVersion { get; set; }
     }
 }

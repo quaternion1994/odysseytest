@@ -12,6 +12,7 @@ namespace OdysseyServer.Persistence.Configurations
         public void Configure(EntityTypeBuilder<CharacterGroupsDbo> builder)
         {
             builder.ToTable("CharacterGroups");
+            builder.Property(a => a.RowVersion).IsRowVersion();
 
             builder.HasKey(x => new { x.CharacterId, x.GroupId});
 

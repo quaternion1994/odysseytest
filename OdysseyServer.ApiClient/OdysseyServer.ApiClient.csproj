@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Class1.proto" />
+    <None Remove="Messages.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Class1.proto" />
+    <Protobuf Include="Messages.proto" />
   </ItemGroup>
 
   <ItemGroup>

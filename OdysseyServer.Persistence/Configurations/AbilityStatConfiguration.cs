@@ -16,6 +16,7 @@ namespace OdysseyServer.Persistence.Configurations
             builder.Property(e => e.Id).HasColumnName("Id");
             builder.Property(e => e.Attack).HasColumnName("Attack");
             builder.Property(e => e.Defence).HasColumnName("Defence");
+            builder.Property(a => a.RowVersion).IsRowVersion();
 
             builder.HasOne(x => x.Ability)
                 .WithOne(b => b.Stats)

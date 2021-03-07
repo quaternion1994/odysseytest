@@ -41,19 +41,9 @@ namespace OdysseyServer.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post()
         {            
-            var person = new Character
-            {
-                GearTier = 100,
-                Level = 1,
-                Name = "Yar",
-                Power = 100,
-                Xp = 10
-            };
-            person.Ability.Add(new Ability { Id = 1 });
-            person.Ability.Add(new Ability { Id = 3 });
-            /*var stream = Request.BodyReader.AsStream();
-            var person = Character.Parser.ParseFrom(stream);*/
-            //seria
+            
+            var stream = Request.BodyReader.AsStream();
+            var person = Character.Parser.ParseFrom(stream);
             await _characterService.CreateCharacter(person);
            
             return Ok();
@@ -62,18 +52,9 @@ namespace OdysseyServer.Api.Controllers
         // PUT api/character
         [HttpPut("")]
         public async Task<IActionResult> CharacterUpdate()
-        {
-            var person = new Character
-            {
-                GearTier = 100,
-                Level = 1,
-                Name = "Yar",
-                Power = 200,
-                Xp = 10,
-                Id = 2
-            };
-            /*var stream = Request.BodyReader.AsStream();
-            var person = Character.Parser.ParseFrom(stream);*/
+        {           
+            var stream = Request.BodyReader.AsStream();
+            var person = Character.Parser.ParseFrom(stream);
             var result = await _characterService.UpdateCharacter(person);
             var data = result.ToByteArray();
             return File(data, "application/octet-stream");

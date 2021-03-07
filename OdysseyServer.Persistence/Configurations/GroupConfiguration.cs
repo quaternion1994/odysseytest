@@ -16,6 +16,7 @@ namespace OdysseyServer.Persistence.Configurations
             builder.Property(e => e.Id).HasColumnName("Id");
             builder.Property(e => e.IconName).HasColumnName("IconName");
             builder.Property(e => e.Name).HasColumnName("Name");
+            builder.Property(a => a.RowVersion).IsRowVersion();
         }
     }
 }

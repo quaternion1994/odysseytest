@@ -11,5 +11,6 @@ namespace OdysseyServer.Persistence.Entities
         public int Defence { get; set; }
         public long AbilityId { get; set; }
         public AbilityDbo Ability { get; set; }
+        public byte[] RowVersion { get; set; }
     }
 }

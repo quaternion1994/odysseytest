@@ -36,11 +36,17 @@ namespace OdysseyServer.Api
                 mc.AddProfile(new MappingProfile());
             });
 
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration["CacheConfiguration:Host"];
+            });
+
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICharacterService, CharacterService>();
             services.AddScoped<IAbilityService, AbilityService>();
+            services.AddScoped<IGroupService, GroupService>();
 
         }
 

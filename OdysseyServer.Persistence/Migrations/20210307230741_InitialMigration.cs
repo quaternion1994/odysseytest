@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OdysseyServer.Persistence.Migrations
 {
@@ -14,7 +15,8 @@ namespace OdysseyServer.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
-                    RequiredLevel = table.Column<int>(type: "int", nullable: false)
+                    RequiredLevel = table.Column<int>(type: "int", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -31,7 +33,8 @@ namespace OdysseyServer.Persistence.Migrations
                     Power = table.Column<int>(type: "int", nullable: false),
                     Xp = table.Column<int>(type: "int", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
-                    GearTier = table.Column<int>(type: "int", nullable: false)
+                    GearTier = table.Column<int>(type: "int", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,7 +48,8 @@ namespace OdysseyServer.Persistence.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IconName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    IconName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,7 +64,8 @@ namespace OdysseyServer.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Attack = table.Column<int>(type: "int", nullable: false),
                     Defence = table.Column<int>(type: "int", nullable: false),
-                    AbilityId = table.Column<long>(type: "bigint", nullable: false)
+                    AbilityId = table.Column<long>(type: "bigint", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -78,7 +83,8 @@ namespace OdysseyServer.Persistence.Migrations
                 columns: table => new
                 {
                     CharacterId = table.Column<long>(type: "bigint", nullable: false),
-                    AbilityId = table.Column<long>(type: "bigint", nullable: false)
+                    AbilityId = table.Column<long>(type: "bigint", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,7 +108,8 @@ namespace OdysseyServer.Persistence.Migrations
                 columns: table => new
                 {
                     CharacterId = table.Column<long>(type: "bigint", nullable: false),
-                    GroupId = table.Column<long>(type: "bigint", nullable: false)
+                    GroupId = table.Column<long>(type: "bigint", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
