@@ -7,9 +7,9 @@ using System.Text;
 
 namespace OdysseyServer.Persistence.Configurations
 {
-    internal class GroupConfiguration : IEntityTypeConfiguration<Group>
+    internal class GroupConfiguration : IEntityTypeConfiguration<GroupDbo>
     {
-        public void Configure(EntityTypeBuilder<Group> builder)
+        public void Configure(EntityTypeBuilder<GroupDbo> builder)
         {
             builder.ToTable("Group");
             builder.HasKey(e => e.Id);

@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using OdysseyServer.Persistence.Entities;
 using OdysseyServer.Services.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Google.Protobuf;
+using OdysseyServer.ApiClient;
 
 namespace OdysseyServer.Api.Controllers
 {
@@ -18,59 +15,85 @@ namespace OdysseyServer.Api.Controllers
         //private IMemoryCache _cache;
         private ICharacterService _characterService;
 
-        public CharacterController(/*IMemoryCache cache*/ICharacterService characterService)
+        public CharacterController(ICharacterService characterService)
         {
             _characterService = characterService;
-            //_cache = cache;
         }
         // GET: api/<CharacterController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet("allcharacters")]
+        public async Task<IActionResult> GetAllCharacter()
         {
-            return new string[] { "value1", "value2" };
+            var characters = await _characterService.GetAllCharacters();
+            var data = characters.ToByteArray();
+            return File(data, "application/octet-stream");
         }
 
-        // GET api/<CharacterController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/character
+        [HttpGet("")]
+        public async Task<IActionResult> GetCharacterById(long id)
         {
-            return "value";
+            var character = await _characterService.GetCharacterById(id);
+            var data = character.ToByteArray();
+            return File(data, "application/octet-stream");
         }
 
-        // POST api/<CharacterController>
+        // POST api/character
         [HttpPost]
-        public async Task Post([FromBody] object value)
-        {
-            var ch = new Character
+        public async Task<IActionResult> Post()
+        {            
+            var person = new Character
             {
-                Name = "Yaroslav",
-                CharacterAbilities = null,
-                GearTier = 200,
+                GearTier = 100,
                 Level = 1,
+                Name = "Yar",
                 Power = 100,
-                Xp = 200
+                Xp = 10
             };
-            try
-            {
-                await _characterService.CreateCharacter(ch);
-            }
-            catch (Exception e)
-            {
-                e.ToString();
-            }
+            person.Ability.Add(new Ability { Id = 1 });
+            person.Ability.Add(new Ability { Id = 3 });
+            /*var stream = Request.BodyReader.AsStream();
+            var person = Character.Parser.ParseFrom(stream);*/
+            //seria
+            await _characterService.CreateCharacter(person);
            
+            return Ok();
         }
 
-        // PUT api/<CharacterController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT api/character
+        [HttpPut("")]
+        public async Task<IActionResult> CharacterUpdate()
         {
+            var person = new Character
+            {
+                GearTier = 100,
+                Level = 1,
+                Name = "Yar",
+                Power = 200,
+                Xp = 10,
+                Id = 2
+            };
+            /*var stream = Request.BodyReader.AsStream();
+            var person = Character.Parser.ParseFrom(stream);*/
+            var result = await _characterService.UpdateCharacter(person);
+            var data = result.ToByteArray();
+            return File(data, "application/octet-stream");
         }
 
-        // DELETE api/<CharacterController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // DELETE api/character
+        [HttpDelete("")]
+        public async Task<IActionResult> CharacterDelete(long id)
         {
+            await _characterService.DeleteCharacter(id);
+            return Ok();
+        }
+
+        // PUT api/character/lvlboost
+        [HttpPut("lvlboost")]
+        public async Task<IActionResult> CharecterLevelBoost(long id, int lvlNumber)
+        {
+            var character = await _characterService.CharacterLevelBoost(id, lvlNumber);
+            var data = character.ToByteArray();
+            return File(data, "application/octet-stream");
         }
     }
 }

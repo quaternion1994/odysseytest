@@ -4,10 +4,11 @@ using System.Text;
 
 namespace OdysseyServer.Persistence.Entities
 {
-    public class Group
+    public class GroupDbo
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string IconName { get; set; }
+        public ICollection<CharacterGroupsDbo> CharacterGroups { get; set; }
     }
 }

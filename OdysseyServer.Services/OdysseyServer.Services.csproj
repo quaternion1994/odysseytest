@@ -5,10 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Mappers\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OdysseyServer.ApiClient\OdysseyServer.ApiClient.csproj" />
     <ProjectReference Include="..\OdysseyServer.Common\OdysseyServer.Common.csproj" />
     <ProjectReference Include="..\OdysseyServer.Persistence\OdysseyServer.Persistence.csproj" />
   </ItemGroup>

@@ -4,9 +4,9 @@ using OdysseyServer.Persistence.Entities;
 
 namespace OdysseyServer.Persistence.Configurations
 {
-    internal class CharacterEntityTypeConfiguration : IEntityTypeConfiguration<Character>
+    internal class CharacterEntityTypeConfiguration : IEntityTypeConfiguration<CharacterDbo>
     {
-        public void Configure(EntityTypeBuilder<Character> builder)
+        public void Configure(EntityTypeBuilder<CharacterDbo> builder)
         {
             builder.ToTable("Character");
             builder.HasKey(e => e.Id);

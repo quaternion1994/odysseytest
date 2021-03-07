@@ -19,7 +19,7 @@ namespace OdysseyServer.Persistence.Repository
             this.dbSet = context.Set<TEntity>();
         }
 
-        public virtual IEnumerable<TEntity> Get(
+        public async virtual Task<List<TEntity>> Get(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "")
@@ -39,32 +39,38 @@ namespace OdysseyServer.Persistence.Repository
 
             if (orderBy != null)
             {
-                return orderBy(query).ToList();
+                return await orderBy(query).ToListAsync();
             }
             else
             {
-                return query.ToList();
+                return await query.ToListAsync();
             }
         }
 
-        public virtual TEntity GetByID(object id)
+        public async virtual Task<TEntity> GetByID(object id)
         {
-            return dbSet.Find(id);
+            return await dbSet.FindAsync(id);
         }
 
         public async virtual Task Insert(TEntity entity)
         {
-            await dbSet.AddAsync(entity);
+            dbSet.Add(entity);
             await context.SaveChangesAsync();
         }
 
-        public virtual void Delete(object id)
+        public async virtual Task InsertMany(IEnumerable<TEntity> entities)
         {
-            TEntity entityToDelete = dbSet.Find(id);
-            Delete(entityToDelete);
+            dbSet.AddRange(entities);
+            await context.SaveChangesAsync();
         }
 
-        public async virtual void Delete(TEntity entityToDelete)
+        public async virtual Task Delete(object id)
+        {
+            TEntity entityToDelete = await dbSet.FindAsync(id);
+            await Delete(entityToDelete);
+        }
+
+        public async virtual Task Delete(TEntity entityToDelete)
         {
             if (context.Entry(entityToDelete).State == EntityState.Detached)
             {
@@ -74,7 +80,7 @@ namespace OdysseyServer.Persistence.Repository
             await context.SaveChangesAsync();
         }
 
-        public async virtual void Update(TEntity entityToUpdate)
+        public async virtual Task Update(TEntity entityToUpdate)
         {
             dbSet.Attach(entityToUpdate);
             context.Entry(entityToUpdate).State = EntityState.Modified;

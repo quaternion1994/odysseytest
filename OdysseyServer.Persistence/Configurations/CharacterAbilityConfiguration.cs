@@ -7,24 +7,23 @@ using System.Text;
 
 namespace OdysseyServer.Persistence.Configurations
 {
-    internal class CharacterAbilityConfiguration : IEntityTypeConfiguration<CharacterAbilities>
+    internal class CharacterAbilityConfiguration : IEntityTypeConfiguration<CharacterAbilitiesDbo>
     {
-        public void Configure(EntityTypeBuilder<CharacterAbilities> builder)
+        public void Configure(EntityTypeBuilder<CharacterAbilitiesDbo> builder)
         {
             builder.ToTable("CharacterAbilities");
 
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasColumnName("Id");
+            builder.HasKey(ca => new { ca.AbilityId, ca.CharacterId });
 
             builder.HasOne(d => d.Character)
-                .WithMany()
+                .WithMany(x => x.CharacterAbilities)
                 .HasForeignKey(t => t.CharacterId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_CharacterAbilities_Characters")
                 .IsRequired();
 
             builder.HasOne(d => d.Ability)
-                    .WithMany()
+                    .WithMany(x => x.CharacterAbilities)
                     .HasForeignKey(t => t.AbilityId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_CharacterAbilities_Ability")

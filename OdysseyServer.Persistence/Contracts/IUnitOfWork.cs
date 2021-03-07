@@ -8,5 +8,6 @@ namespace OdysseyServer.Persistence.Contracts
     {
         IAbilityRepository Ability { get; }
         ICharacterRepository Character { get; }
+        ICharacterAbilitiesRepository CharacterAbilities { get; }
     }
 }

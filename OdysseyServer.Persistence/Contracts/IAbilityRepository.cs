@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OdysseyServer.Persistence.Contracts
 {
-    public interface IAbilityRepository : IRepository<Ability>
+    public interface IAbilityRepository : IRepository<AbilityDbo>
     {        
     }
 }

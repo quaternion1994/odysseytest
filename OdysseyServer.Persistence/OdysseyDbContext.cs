@@ -15,12 +15,12 @@ namespace OdysseyServer.Persistence
             Database.EnsureCreated();
         }
 
-        public virtual DbSet<Character> Characters { get; set; }
-        public virtual DbSet<Ability> Abilities { get; set; }
-        public virtual DbSet<CharacterAbilities> CharacterAbilities { get; set; }
-        public virtual DbSet<AbilityStat> AbilityStat { get; set; }
-        public virtual DbSet<Group> Group { get; set; }
-        public virtual DbSet<CharacterGroups> CharacterGroups { get; set; }
+        public virtual DbSet<CharacterDbo> Characters { get; set; }
+        public virtual DbSet<AbilityDbo> Abilities { get; set; }
+        public virtual DbSet<CharacterAbilitiesDbo> CharacterAbilities { get; set; }
+        public virtual DbSet<AbilityStatsDbo> AbilityStat { get; set; }
+        public virtual DbSet<GroupDbo> Group { get; set; }
+        public virtual DbSet<CharacterGroupsDbo> CharacterGroups { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

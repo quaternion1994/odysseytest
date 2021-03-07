@@ -4,11 +4,12 @@ using System.Text;
 
 namespace OdysseyServer.Persistence.Entities
 {
-    public class AbilityStat
+    public class AbilityStatsDbo
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public int Attack { get; set; }
         public int Defence { get; set; }
-        public ICollection<Ability> Abilities { get; set; }
+        public long AbilityId { get; set; }
+        public AbilityDbo Ability { get; set; }
     }
 }

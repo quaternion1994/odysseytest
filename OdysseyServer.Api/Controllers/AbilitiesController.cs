@@ -1,55 +1,97 @@
 ﻿using Google.Protobuf;
 using Microsoft.AspNetCore.Mvc;
+using OdysseyServer.ApiClient;
+using OdysseyServer.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static OdysseyServer.ApiClient.AddBookRequest.Types;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OdysseyServer.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/ability")]
     [ApiController]
     public class AbilitiesController : ControllerBase
     {
-        // GET: api/<AbilitiesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private IAbilityService _abilityService;
+
+        public AbilitiesController(IAbilityService abilityService)
         {
-            var a = new Author
-            {
-                Name = "a",
-                Surname = "b"
-            };
-            var data = a.ToByteArray();
-            return new string[] { "value1", "value2" };
+            _abilityService = abilityService;
+        }
+        // GET: api/<CharacterController>
+        [HttpGet("allabilities")]
+        public async Task<IActionResult> GetAllAbilities()
+        {
+            var abilities = await _abilityService.GetAllAbilities();
+            var data = abilities.ToByteArray();
+            return File(data, "application/octet-stream");
         }
 
-        // GET api/<AbilitiesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/ability
+        [HttpGet("")]
+        public async Task<IActionResult> GetAbilityById(long id)
         {
-            return "value";
+            var ability = await _abilityService.GetAbilityById(id);
+            var data = ability.ToByteArray();
+            return File(data, "application/octet-stream");
         }
 
-        // POST api/<AbilitiesController>
+        // POST api/ability
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post()
         {
+            var ability = new Ability
+            {
+                Level = 1,
+                RequiredLevel = 4,
+                Name = "Fireball",
+                Stats = new AbilityStats
+                {
+                    Attack = 10,
+                    Defence = 20
+                }
+            };
+            /*var stream = Request.BodyReader.AsStream();
+            var person = Character.Parser.ParseFrom(stream);*/
+            //seria
+            await _abilityService.CreateAbility(ability);
+
+            return Ok();
         }
 
-        // PUT api/<AbilitiesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT api/ability
+        [HttpPut("")]
+        public async Task<IActionResult> AbilityUpdate()
         {
+            var ability = new Ability
+            {
+                Level = 1,
+                RequiredLevel = 4,
+                Name = "Frostball",
+                Stats = new AbilityStats
+                {
+                    Attack = 10,
+                    Defence = 20,
+                    Id = 1
+                },
+                Id = 1
+            };
+            /*var stream = Request.BodyReader.AsStream();
+            var person = Character.Parser.ParseFrom(stream);*/
+            var result = await _abilityService.UpdateAbility(ability);
+            var data = result.ToByteArray();
+            return File(data, "application/octet-stream");
         }
 
-        // DELETE api/<AbilitiesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // DELETE api/ability
+        [HttpDelete("")]
+        public async Task<IActionResult> AbilityDelete(long id)
         {
+            await _abilityService.DeleteAbility(id);
+            return Ok();
         }
     }
 }

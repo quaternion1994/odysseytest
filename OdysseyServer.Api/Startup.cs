@@ -10,6 +10,8 @@ using OdysseyServer.Services.Contracts;
 using OdysseyServer.Persistence.Contracts;
 using OdysseyServer.Persistence.Repository;
 using OdysseyServer.Api.Middleware;
+using AutoMapper;
+using OdysseyServer.Services.Mappers;
 
 namespace OdysseyServer.Api
 {
@@ -29,9 +31,17 @@ namespace OdysseyServer.Api
             services.AddSwaggerGen();
             services.AddDbContext<OdysseyDbContext>(options =>
                 options.UseSqlServer(Configuration["DbConfiguration:ConnectionStrings"]));
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICharacterService, CharacterService>();
-            
+            services.AddScoped<IAbilityService, AbilityService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace OdysseyServer.Persistence.Repository
 {
-    public class AbilityRepository : Repository<Ability>, IAbilityRepository
+    public class AbilityRepository : Repository<AbilityDbo>, IAbilityRepository
     {
         private OdysseyDbContext _context;
 
