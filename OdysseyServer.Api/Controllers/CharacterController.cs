@@ -20,7 +20,7 @@ namespace OdysseyServer.Api.Controllers
             _characterService = characterService;
         }
         // GET: api/<CharacterController>
-        [HttpPost("allcharacters")]
+        [HttpGet("allcharacters")]
         public async Task<IActionResult> GetAllCharacter()
         {
             var characters = await _characterService.GetAllCharacters();

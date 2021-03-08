@@ -174,5 +174,10 @@ message AbilityAllResponse
     AllAbility ability = 1;
 }
 
+message CharacterAllResponse
+{
+    AllCharacter character = 1;
+}
+
 
 

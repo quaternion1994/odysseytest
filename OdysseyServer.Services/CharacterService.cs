@@ -76,15 +76,41 @@ namespace OdysseyServer.Services
 
         }
 
-        public async Task<AllCharacter> GetAllCharacters()
+        public async Task<CharacterAllResponse> GetAllCharacters()
         {
             var characterDbo = await _unitOfWork.Character.GetAllCharacters();
-            var objectForMap = new AllCharacterDbo
+            var listOfCharacters = new List<Character>();
+            foreach (var elem in characterDbo)
             {
-                Characters = characterDbo
+                var abilitiesDbo = elem.Abilities;
+                var groupsDbo = elem.Groups;
+                var listOfAbilities = new List<Ability>();
+                var listOfGroups = new List<Group>();
+                foreach (var ability in abilitiesDbo)
+                {
+                    var convertedAbility = new Ability();
+                    convertedAbility = Converter.AbilityDboToAbility(convertedAbility, ability);
+                    listOfAbilities.Add(convertedAbility);
+                }
+                foreach (var group in groupsDbo)
+                {
+                    var convertedGroup = new Group();
+                    convertedGroup = Converter.GroupDboToGroup(convertedGroup, group);
+                    listOfGroups.Add(convertedGroup);
+                }
+                var convertedCharacter = new Character();
+                convertedCharacter = Converter.CharacterDboToCharacter(convertedCharacter, elem, listOfAbilities, listOfGroups);
+                listOfCharacters.Add(convertedCharacter);
+            }
+
+            var allCharacters = new AllCharacter();
+            allCharacters.Characters.AddRange(listOfCharacters);
+            
+            var result = new CharacterAllResponse
+            {
+                Character = allCharacters
             };
-            var character = _mapper.Map<AllCharacter>(objectForMap);
-            return character;
+            return result;
         }
 
         public async Task<CharacterUpdateResponse> UpdateCharacter(CharacterUpdateRequest requestObject)

@@ -11,7 +11,7 @@ namespace OdysseyServer.Services.Contracts
     {
         Task<CharacterCreateResponse> CreateCharacter(CharacterCreateRequest requestObject);
         Task<CharacterGetResponse> GetCharacterById(CharacterGetRequest requestObject);
-        Task<AllCharacter> GetAllCharacters();
+        Task<CharacterAllResponse> GetAllCharacters();
         Task<CharacterUpdateResponse> UpdateCharacter(CharacterUpdateRequest requestObject);
         Task DeleteCharacter(CharacterDeleteRequest requestObject);
         Task<CharacterAddGroupResponse> CharacterAddGroup(CharacterAddGroupRequest requestObject);
