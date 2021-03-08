@@ -1,0 +1,117 @@
+﻿@page "/characters"
+
+<h1>Characters</h1>
+
+@if (mode == 0)
+{
+    <button class="btn btn-primary" @onclick="AddCharacter">Add character</button>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Power</td>
+                <td>XP</td>
+                <td>Level</td>
+                <td>GearTier</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in characters)
+            {
+                <tr>
+                    <td>@row.Name</td>
+                    <td>@row.Power</td>
+                    <td>@row.XP</td>
+                    <td>@row.Level</td>
+                    <td>@row.GearTier</td>
+                    <td>
+                        <button class="btn btn-outline-info" @onclick="() => EditCharacter(row)">Edit</button>
+                        <button class="btn btn-warning" @onclick="() => RemoveCharacter(row)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (mode == 1)
+{
+<EditForm EditContext="@editContext" Model="@current" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <p class="form-group">
+        <label>
+            Character name:
+            <InputText class="form-control" @bind-Value="current.Name" />
+        </label>
+    </p>
+    <p class="form-group">
+        <label>
+            Power:
+            <InputNumber min="0" class="form-control" @bind-Value="current.Power" />
+        </label>
+    </p>
+    <p class="form-group">
+        <label>
+            XP:
+            <InputNumber min="0" class="form-control" @bind-Value="current.XP" />
+        </label>
+    </p>
+    <p class="form-group">
+        <label>
+            Level:
+            <InputNumber min="0" class="form-control" @bind-Value="current.Level" />
+        </label>
+    </p>
+    <p class="form-group">
+        <label>
+            Gear tier:
+            <InputNumber min="0" class="form-control" @bind-Value="current.GearTier" />
+        </label>
+    </p>
+    <button class="btn btn-primary" type="submit">Save</button>
+
+</EditForm>
+}
+
+@code {
+    private List<Character> characters;
+    private Character current;
+    private EditContext editContext;
+    private byte mode = 0;
+
+    private void HandleValidSubmit()
+    {
+        //bool isValid = editContext.Validate();
+
+        mode = 0;
+    }
+
+    private void AddCharacter()
+    {
+        current = new Character() { Name = "new" };
+        characters.Add(current);
+        mode = 1;
+    }
+
+    private void RemoveCharacter(Character row)
+    {
+        characters.Remove(row);
+    }
+
+    private void EditCharacter(Character row)
+    {
+        current = row;
+        mode = 1;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        characters = new List<Character>()
+    {
+            new Character() { Name = "Simpson", XP = 100 }
+        };
+        //await Http.GetFromJsonAsync<WeatherForecast[]>("api/characters");
+    }
+}
