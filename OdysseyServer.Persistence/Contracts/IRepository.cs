@@ -15,5 +15,6 @@ namespace OdysseyServer.Persistence.Contracts
         Task Delete(object id);
         Task Update(TEntity entityToUpdate);
         Task InsertMany(IEnumerable<TEntity> entities);
+        Task SaveChangesAsync();
     }
 }

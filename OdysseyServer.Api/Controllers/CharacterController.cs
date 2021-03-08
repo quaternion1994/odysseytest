@@ -20,7 +20,7 @@ namespace OdysseyServer.Api.Controllers
             _characterService = characterService;
         }
         // GET: api/<CharacterController>
-        [HttpGet("allcharacters")]
+        [HttpPost("allcharacters")]
         public async Task<IActionResult> GetAllCharacter()
         {
             var characters = await _characterService.GetAllCharacters();
@@ -93,6 +93,16 @@ namespace OdysseyServer.Api.Controllers
 
         [HttpPost("addabilities")]
         public async Task<IActionResult> CharacterAddAbilities()
+        {
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = CharacterAddAbilitiesRequest.Parser.ParseFrom(stream);
+            var character = await _characterService.CharacterAddAbilities(requestObject);
+            var data = character.ToByteArray();
+            return File(data, "application/octet-stream");
+        }
+
+        [HttpPost("abilityBoost")]
+        public async Task<IActionResult> CharacterBoostAbility()
         {
             var stream = Request.BodyReader.AsStream();
             var requestObject = CharacterAddAbilitiesRequest.Parser.ParseFrom(stream);

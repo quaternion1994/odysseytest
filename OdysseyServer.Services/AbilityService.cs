@@ -6,6 +6,7 @@ using OdysseyServer.Persistence.Entities;
 using OdysseyServer.Services.Contracts;
 using System.Threading.Tasks;
 using OdysseyServer.Services.Helpers;
+using OdysseyServer.Services.Converters;
 
 namespace OdysseyServer.Services
 {
@@ -37,34 +38,36 @@ namespace OdysseyServer.Services
         {
             var abilityDbo = _mapper.Map<AbilityDbo>(requestObject.Ability);
             await _unitOfWork.Ability.Insert(abilityDbo);
-            var abilityCreatedDbo = await _unitOfWork.Ability.GetByID(abilityDbo.Id);
-            var ability = _mapper.Map<Ability>(abilityCreatedDbo);
+            var ability = _mapper.Map<Ability>(abilityDbo);
             var result = new AbilityAddResponse
             {
                 Ability = ability
             };
             return result;
         }
-
-        public async Task<AllAbility> GetAllAbilities()
+          
+        public async Task<AbilityAllResponse> GetAllAbilities()
         {
             var abilitiesDbo = await _unitOfWork.Ability.Get(includeProperties: "Stats");
-            var a = new AllAbilityDbo
+
+            var allAbilityDbo = new AllAbilityDbo
             {
                 Abilities = abilitiesDbo
             };
-            var ability = _mapper.Map<AllAbility>(a);
-            return ability;
+            var ability = _mapper.Map<AllAbility>(allAbilityDbo);
+            var result = new AbilityAllResponse
+            {
+                Ability = ability
+            };
+            return result;
         }
 
         public async Task<AbilityUpdateResponse> UpdateAbility(AbilityUpdateRequest requestObject)
         {
-            var abilityDbo = _mapper.Map<AbilityDbo>(requestObject.Ability);            
-            abilityDbo.RowVersion = requestObject.Ability.RowVersion.ToByteArray();
-            abilityDbo.Stats.RowVersion = requestObject.Ability.Stats.RowVersion.ToByteArray();
-            await _unitOfWork.Ability.Update(abilityDbo);
-            var abilityDboUpdated = await _unitOfWork.Ability.GetByID(abilityDbo.Id);
-            var ability = _mapper.Map<Ability>(abilityDboUpdated);
+            var abilityFromDb = await _unitOfWork.Ability.GetByID(requestObject.Ability.Id);
+            Converter.UpdateDboByAbility(requestObject.Ability, abilityFromDb);
+            await _unitOfWork.Ability.SaveChangesAsync();
+            var ability = _mapper.Map<Ability>(abilityFromDb);
             var result = new AbilityUpdateResponse
             {
                 Ability = ability

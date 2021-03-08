@@ -57,7 +57,7 @@ namespace OdysseyServer.Api.Controllers
             var stream = Request.BodyReader.AsStream();
             var group = Group.Parser.ParseFrom(stream);
             await _groupService.CreateGroup(group);
-
+            //_distributedCache.RemoveAsync(cacheKey, data);
             return Ok();
         }
 

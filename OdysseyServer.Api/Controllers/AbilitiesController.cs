@@ -42,7 +42,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // POST api/ability
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> AddAbility()
         {           
             var stream = Request.BodyReader.AsStream();
@@ -65,7 +65,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // DELETE api/ability
-        [HttpDelete("")]
+        [HttpPost("delete")]
         public async Task<IActionResult> AbilityDelete()
         {           
             var stream = Request.BodyReader.AsStream();

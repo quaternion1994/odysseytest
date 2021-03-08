@@ -157,5 +157,20 @@ message AbilityDeleteRequest
     int64 abilityId = 1;
 }
 
+message CharacterAbilityBoostRequest
+{
+    int64 abilityId = 1;
+}
+
+message CharacterAbilityBoostResponse
+{
+    Character character = 1;
+}
+
+message AbilityAllResponse
+{
+    AllAbility ability = 1;
+}
+
 
 

@@ -86,5 +86,10 @@ namespace OdysseyServer.Persistence.Repository
             context.Entry(entityToUpdate).State = EntityState.Modified;
             await context.SaveChangesAsync();
         }
+
+        public async virtual Task SaveChangesAsync()
+        {
+            await context.SaveChangesAsync();
+        }
     }
 }
