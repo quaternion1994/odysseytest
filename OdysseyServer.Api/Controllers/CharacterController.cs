@@ -12,15 +12,15 @@ namespace OdysseyServer.Api.Controllers
     [ApiController]
     public class CharacterController : ControllerBase
     {
-        //private IMemoryCache _cache;
         private ICharacterService _characterService;
 
         public CharacterController(ICharacterService characterService)
         {
             _characterService = characterService;
         }
+        
         // GET: api/<CharacterController>
-        [HttpGet("allcharacters")]
+        [HttpGet("/api/characters")]
         public async Task<IActionResult> GetAllCharacter()
         {
             var characters = await _characterService.GetAllCharacters();
@@ -42,7 +42,7 @@ namespace OdysseyServer.Api.Controllers
         // POST api/character
         [HttpPost("create")]
         public async Task<IActionResult> CharacterCreate()
-        {                       
+        {
             var stream = Request.BodyReader.AsStream();
             var person = CharacterCreateRequest.Parser.ParseFrom(stream);
             var result = await _characterService.CreateCharacter(person);

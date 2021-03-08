@@ -17,7 +17,7 @@ namespace OdysseyServer.Admin.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:59386") });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:44385/api/") });
 
             await builder.Build().RunAsync();
         }

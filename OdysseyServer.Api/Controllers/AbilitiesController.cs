@@ -22,7 +22,7 @@ namespace OdysseyServer.Api.Controllers
             _abilityService = abilityService;
         }
         // GET: api/<CharacterController>
-        [HttpGet("allabilities")]
+        [HttpGet("/api/abilities")]
         public async Task<IActionResult> GetAllAbilities()
         {
             var abilities = await _abilityService.GetAllAbilities();
@@ -31,7 +31,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // GET api/ability
-        [HttpPost("byid")]
+        [HttpPost]
         public async Task<IActionResult> GetAbilityById()
         {
             var stream = Request.BodyReader.AsStream();
