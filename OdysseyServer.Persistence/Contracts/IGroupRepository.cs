@@ -8,6 +8,5 @@ namespace OdysseyServer.Persistence.Contracts
 {
     public interface IGroupRepository : IRepository<GroupDbo>
     {
-        Task AddGroupForCharacter(List<CharacterGroupsDbo> characterGroups);
     }
 }

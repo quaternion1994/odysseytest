@@ -79,54 +79,57 @@ namespace OdysseyServer.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CharacterAbilities",
+                name: "AbilityDboCharacterDbo",
                 columns: table => new
                 {
-                    CharacterId = table.Column<long>(type: "bigint", nullable: false),
-                    AbilityId = table.Column<long>(type: "bigint", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    AbilitiesId = table.Column<long>(type: "bigint", nullable: false),
+                    CharacterId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CharacterAbilities", x => new { x.AbilityId, x.CharacterId });
+                    table.PrimaryKey("PK_AbilityDboCharacterDbo", x => new { x.AbilitiesId, x.CharacterId });
                     table.ForeignKey(
-                        name: "FK_CharacterAbilities_Ability",
-                        column: x => x.AbilityId,
+                        name: "FK_AbilityDboCharacterDbo_Ability_AbilitiesId",
+                        column: x => x.AbilitiesId,
                         principalTable: "Ability",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CharacterAbilities_Characters",
+                        name: "FK_AbilityDboCharacterDbo_Character_CharacterId",
                         column: x => x.CharacterId,
                         principalTable: "Character",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CharacterGroups",
+                name: "CharacterDboGroupDbo",
                 columns: table => new
                 {
                     CharacterId = table.Column<long>(type: "bigint", nullable: false),
-                    GroupId = table.Column<long>(type: "bigint", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                    GroupsId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CharacterGroups", x => new { x.CharacterId, x.GroupId });
+                    table.PrimaryKey("PK_CharacterDboGroupDbo", x => new { x.CharacterId, x.GroupsId });
                     table.ForeignKey(
-                        name: "FK_CharacterGroups_Characters",
+                        name: "FK_CharacterDboGroupDbo_Character_CharacterId",
                         column: x => x.CharacterId,
                         principalTable: "Character",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CharacterGroups_Group",
-                        column: x => x.GroupId,
+                        name: "FK_CharacterDboGroupDbo_Group_GroupsId",
+                        column: x => x.GroupsId,
                         principalTable: "Group",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AbilityDboCharacterDbo_CharacterId",
+                table: "AbilityDboCharacterDbo",
+                column: "CharacterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AbilityStats_AbilityId",
@@ -135,26 +138,21 @@ namespace OdysseyServer.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CharacterAbilities_CharacterId",
-                table: "CharacterAbilities",
-                column: "CharacterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CharacterGroups_GroupId",
-                table: "CharacterGroups",
-                column: "GroupId");
+                name: "IX_CharacterDboGroupDbo_GroupsId",
+                table: "CharacterDboGroupDbo",
+                column: "GroupsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "AbilityDboCharacterDbo");
+
+            migrationBuilder.DropTable(
                 name: "AbilityStats");
 
             migrationBuilder.DropTable(
-                name: "CharacterAbilities");
-
-            migrationBuilder.DropTable(
-                name: "CharacterGroups");
+                name: "CharacterDboGroupDbo");
 
             migrationBuilder.DropTable(
                 name: "Ability");

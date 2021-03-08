@@ -13,6 +13,7 @@ message Character
         int32 gearTier = 6;
         repeated Ability ability = 7;
         repeated Group group = 8;
+        bytes rowVersion = 9;
     }
 
 message Ability
@@ -47,6 +48,7 @@ message Group
         int64 id = 1;
         string name = 2;
         string iconName = 3;
+        bytes rowVersion = 4;
 }
 
 message AllGroup

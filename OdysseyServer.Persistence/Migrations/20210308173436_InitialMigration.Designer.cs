@@ -10,7 +10,7 @@ using OdysseyServer.Persistence;
 namespace OdysseyServer.Persistence.Migrations
 {
     [DbContext(typeof(OdysseyDbContext))]
-    [Migration("20210308095905_InitialMigration")]
+    [Migration("20210308173436_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,36 @@ namespace OdysseyServer.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("AbilityDboCharacterDbo", b =>
+                {
+                    b.Property<long>("AbilitiesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("CharacterId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AbilitiesId", "CharacterId");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("AbilityDboCharacterDbo");
+                });
+
+            modelBuilder.Entity("CharacterDboGroupDbo", b =>
+                {
+                    b.Property<long>("CharacterId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("GroupsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("CharacterId", "GroupsId");
+
+                    b.HasIndex("GroupsId");
+
+                    b.ToTable("CharacterDboGroupDbo");
+                });
 
             modelBuilder.Entity("OdysseyServer.Persistence.Entities.AbilityDbo", b =>
                 {
@@ -85,26 +115,6 @@ namespace OdysseyServer.Persistence.Migrations
                     b.ToTable("AbilityStats");
                 });
 
-            modelBuilder.Entity("OdysseyServer.Persistence.Entities.CharacterAbilitiesDbo", b =>
-                {
-                    b.Property<long>("AbilityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CharacterId")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("AbilityId", "CharacterId");
-
-                    b.HasIndex("CharacterId");
-
-                    b.ToTable("CharacterAbilities");
-                });
-
             modelBuilder.Entity("OdysseyServer.Persistence.Entities.CharacterDbo", b =>
                 {
                     b.Property<long>("Id")
@@ -145,26 +155,6 @@ namespace OdysseyServer.Persistence.Migrations
                     b.ToTable("Character");
                 });
 
-            modelBuilder.Entity("OdysseyServer.Persistence.Entities.CharacterGroupsDbo", b =>
-                {
-                    b.Property<long>("CharacterId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("CharacterId", "GroupId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("CharacterGroups");
-                });
-
             modelBuilder.Entity("OdysseyServer.Persistence.Entities.GroupDbo", b =>
                 {
                     b.Property<long>("Id")
@@ -191,6 +181,36 @@ namespace OdysseyServer.Persistence.Migrations
                     b.ToTable("Group");
                 });
 
+            modelBuilder.Entity("AbilityDboCharacterDbo", b =>
+                {
+                    b.HasOne("OdysseyServer.Persistence.Entities.AbilityDbo", null)
+                        .WithMany()
+                        .HasForeignKey("AbilitiesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OdysseyServer.Persistence.Entities.CharacterDbo", null)
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CharacterDboGroupDbo", b =>
+                {
+                    b.HasOne("OdysseyServer.Persistence.Entities.CharacterDbo", null)
+                        .WithMany()
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OdysseyServer.Persistence.Entities.GroupDbo", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("OdysseyServer.Persistence.Entities.AbilityStatsDbo", b =>
                 {
                     b.HasOne("OdysseyServer.Persistence.Entities.AbilityDbo", "Ability")
@@ -203,65 +223,9 @@ namespace OdysseyServer.Persistence.Migrations
                     b.Navigation("Ability");
                 });
 
-            modelBuilder.Entity("OdysseyServer.Persistence.Entities.CharacterAbilitiesDbo", b =>
-                {
-                    b.HasOne("OdysseyServer.Persistence.Entities.AbilityDbo", "Ability")
-                        .WithMany("CharacterAbilities")
-                        .HasForeignKey("AbilityId")
-                        .HasConstraintName("FK_CharacterAbilities_Ability")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("OdysseyServer.Persistence.Entities.CharacterDbo", "Character")
-                        .WithMany("CharacterAbilities")
-                        .HasForeignKey("CharacterId")
-                        .HasConstraintName("FK_CharacterAbilities_Characters")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Ability");
-
-                    b.Navigation("Character");
-                });
-
-            modelBuilder.Entity("OdysseyServer.Persistence.Entities.CharacterGroupsDbo", b =>
-                {
-                    b.HasOne("OdysseyServer.Persistence.Entities.CharacterDbo", "Character")
-                        .WithMany("CharacterGroups")
-                        .HasForeignKey("CharacterId")
-                        .HasConstraintName("FK_CharacterGroups_Characters")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("OdysseyServer.Persistence.Entities.GroupDbo", "Group")
-                        .WithMany("CharacterGroups")
-                        .HasForeignKey("GroupId")
-                        .HasConstraintName("FK_CharacterGroups_Group")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Character");
-
-                    b.Navigation("Group");
-                });
-
             modelBuilder.Entity("OdysseyServer.Persistence.Entities.AbilityDbo", b =>
                 {
-                    b.Navigation("CharacterAbilities");
-
                     b.Navigation("Stats");
-                });
-
-            modelBuilder.Entity("OdysseyServer.Persistence.Entities.CharacterDbo", b =>
-                {
-                    b.Navigation("CharacterAbilities");
-
-                    b.Navigation("CharacterGroups");
-                });
-
-            modelBuilder.Entity("OdysseyServer.Persistence.Entities.GroupDbo", b =>
-                {
-                    b.Navigation("CharacterGroups");
                 });
 #pragma warning restore 612, 618
         }

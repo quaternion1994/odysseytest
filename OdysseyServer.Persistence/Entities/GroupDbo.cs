@@ -9,7 +9,7 @@ namespace OdysseyServer.Persistence.Entities
         public long Id { get; set; }
         public string Name { get; set; }
         public string IconName { get; set; }
-        public ICollection<CharacterGroupsDbo> CharacterGroups { get; set; }
+        public ICollection<CharacterDbo> Character { get; set; }
         public byte[] RowVersion { get; set; }
     }
 }
