@@ -29,7 +29,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // GET api/character
-        [HttpGet("")]
+        [HttpPost("getbyid")]
         public async Task<IActionResult> GetCharacterById()
         {
             var stream = Request.BodyReader.AsStream();
@@ -40,7 +40,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // POST api/character
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CharacterCreate()
         {
             var stream = Request.BodyReader.AsStream();

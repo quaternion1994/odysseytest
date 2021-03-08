@@ -16,10 +16,6 @@ namespace OdysseyServer.Persistence.Repository
             _context = context;
         }
 
-        public async Task AddGroupForCharacter(List<CharacterGroupsDbo> characterGroups)
-        {
-            _context.CharacterGroups.AddRange(characterGroups);
-            await context.SaveChangesAsync();
-        }
+       
     }
 }

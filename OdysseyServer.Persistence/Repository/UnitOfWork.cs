@@ -15,13 +15,11 @@ namespace OdysseyServer.Persistence.Repository
             _context = context;
             Ability = new AbilityRepository(_context);
             Character = new CharacterRepository(_context);
-            CharacterAbilities = new CharacterAbilityRepository(_context);
             Group = new GroupRepository(_context);
         }
         public IAbilityRepository Ability { get; private set; }
         public ICharacterRepository Character { get; private set; }
 
-        public ICharacterAbilitiesRepository CharacterAbilities { get; private set; }
 
         public IGroupRepository Group { get; private set; }
         

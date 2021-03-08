@@ -17,10 +17,8 @@ namespace OdysseyServer.Persistence
 
         public virtual DbSet<CharacterDbo> Characters { get; set; }
         public virtual DbSet<AbilityDbo> Abilities { get; set; }
-        public virtual DbSet<CharacterAbilitiesDbo> CharacterAbilities { get; set; }
         public virtual DbSet<AbilityStatsDbo> AbilityStat { get; set; }
         public virtual DbSet<GroupDbo> Group { get; set; }
-        public virtual DbSet<CharacterGroupsDbo> CharacterGroups { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -29,10 +27,8 @@ namespace OdysseyServer.Persistence
 
             modelBuilder.ApplyConfiguration(new CharacterEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new AbilityEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new CharacterAbilityConfiguration());
             modelBuilder.ApplyConfiguration(new AbilityStatConfiguration());
             modelBuilder.ApplyConfiguration(new GroupConfiguration());
-            modelBuilder.ApplyConfiguration(new CharacterGroupConfiguration());
 
             //modelBuilder.Seed();
         }

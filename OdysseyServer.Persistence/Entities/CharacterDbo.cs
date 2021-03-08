@@ -12,8 +12,8 @@ namespace OdysseyServer.Persistence.Entities
         public int Xp { get; set; }
         public int Level { get; set; }
         public int GearTier { get; set; }
-        public ICollection<CharacterAbilitiesDbo> CharacterAbilities { get; set; }
-        public ICollection<CharacterGroupsDbo> CharacterGroups { get; set; }
+        public ICollection<AbilityDbo> Abilities { get; set; }
+        public ICollection<GroupDbo> Groups { get; set; }
         public byte[] RowVersion { get; set; }
     }
 }

@@ -29,12 +29,12 @@ namespace OdysseyServer.Persistence.Repository
 
         public async Task<CharacterDbo> GetCharacterById(long id)
         {
-            return await dbSet.Include(x => x.CharacterAbilities).ThenInclude(x => x.Ability).Include(x => x.CharacterGroups).ThenInclude(x => x.Group).Where(x => x.Id == id).FirstOrDefaultAsync();
+            return await dbSet.Include(x => x.Abilities).ThenInclude(x => x.Stats).Include(x => x.Groups).Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<List<CharacterDbo>> GetAllCharacters()
         {
-            return await dbSet.Include(x => x.CharacterAbilities).ThenInclude(x => x.Ability).Include(x => x.CharacterGroups).ThenInclude(x => x.Group).ToListAsync();
+            return await dbSet.Include(x => x.Abilities).Include(x => x.Groups).ToListAsync();
         }        
     }
 }
