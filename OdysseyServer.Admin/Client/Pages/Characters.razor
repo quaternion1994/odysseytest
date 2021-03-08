@@ -1,4 +1,5 @@
 ﻿@page "/characters"
+@inject HttpClient Http
 
 <h1>Characters</h1>
 
@@ -12,7 +13,7 @@
                 <td>Power</td>
                 <td>XP</td>
                 <td>Level</td>
-                <td>GearTier</td>
+                <td>Gear tier</td>
                 <td></td>
             </tr>
         </thead>
@@ -22,7 +23,7 @@
                 <tr>
                     <td>@row.Name</td>
                     <td>@row.Power</td>
-                    <td>@row.XP</td>
+                    <td>@row.Xp</td>
                     <td>@row.Level</td>
                     <td>@row.GearTier</td>
                     <td>
@@ -36,62 +37,64 @@
 }
 else if (mode == 1)
 {
-<EditForm EditContext="@editContext" Model="@current" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <EditForm Model="@current" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <p class="form-group">
-        <label>
-            Character name:
-            <InputText class="form-control" @bind-Value="current.Name" />
-        </label>
-    </p>
-    <p class="form-group">
-        <label>
-            Power:
-            <InputNumber min="0" class="form-control" @bind-Value="current.Power" />
-        </label>
-    </p>
-    <p class="form-group">
-        <label>
-            XP:
-            <InputNumber min="0" class="form-control" @bind-Value="current.XP" />
-        </label>
-    </p>
-    <p class="form-group">
-        <label>
-            Level:
-            <InputNumber min="0" class="form-control" @bind-Value="current.Level" />
-        </label>
-    </p>
-    <p class="form-group">
-        <label>
-            Gear tier:
-            <InputNumber min="0" class="form-control" @bind-Value="current.GearTier" />
-        </label>
-    </p>
-    <button class="btn btn-primary" type="submit">Save</button>
+        <p class="form-group">
+            <label>
+                Character name:
+                <InputText class="form-control" @bind-Value="current.Name" />
+            </label>
+        </p>
+        <p class="form-group">
+            <label>
+                Power:
+                <InputNumber min="0" class="form-control" @bind-Value="current.Power" />
+            </label>
+        </p>
+        <p class="form-group">
+            <label>
+                XP:
+                <InputNumber min="0" class="form-control" @bind-Value="current.Xp" />
+            </label>
+        </p>
+        <p class="form-group">
+            <label>
+                Level:
+                <InputNumber min="0" class="form-control" @bind-Value="current.Level" />
+            </label>
+        </p>
+        <p class="form-group">
+            <label>
+                Gear tier:
+                <InputNumber min="0" class="form-control" @bind-Value="current.GearTier" />
+            </label>
+        </p>
+        <button class="btn btn-primary" type="submit">Save</button>
 
-</EditForm>
+    </EditForm>
+} else if(mode == 2)
+{
+    <h3>Working with server...</h3>
 }
 
 @code {
     private List<Character> characters;
     private Character current;
-    private EditContext editContext;
     private byte mode = 0;
 
-    private void HandleValidSubmit()
+    private async void HandleValidSubmit()
     {
-        //bool isValid = editContext.Validate();
-
+        mode = 2;
+        await Http.PostProtobufAsync("character", current);
+        await ReloadTable();
         mode = 0;
     }
 
     private void AddCharacter()
     {
         current = new Character() { Name = "new" };
-        characters.Add(current);
         mode = 1;
     }
 
@@ -106,12 +109,17 @@ else if (mode == 1)
         mode = 1;
     }
 
+    private async Task ReloadTable()
+    {
+        var response = await Http.GetFromProtobufAsync<AllCharacter>(AllCharacter.Parser, "characters");
+        characters = response.Characters.ToList();
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        characters = new List<Character>()
-    {
-            new Character() { Name = "Simpson", XP = 100 }
-        };
-        //await Http.GetFromJsonAsync<WeatherForecast[]>("api/characters");
+        characters = new List<Character>();
+        mode = 2;
+        await ReloadTable();
+        mode = 0;
     }
 }

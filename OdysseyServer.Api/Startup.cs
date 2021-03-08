@@ -73,6 +73,11 @@ namespace OdysseyServer.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Odyssey API V1");
             });
 
+            app.UseCors(options => options
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+                .AllowAnyHeader());
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

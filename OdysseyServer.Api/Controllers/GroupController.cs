@@ -24,7 +24,7 @@ namespace OdysseyServer.Api.Controllers
             _distributedCache = distributedCache;
         }
 
-        [HttpGet("allGroups")]
+        [HttpGet("/api/groups")]
         public async Task<IActionResult> GetAllGroups()
         {
             var cachedGroups = await _distributedCache.GetAsync(cacheKey);
