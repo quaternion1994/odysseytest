@@ -20,7 +20,6 @@ namespace OdysseyServer.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
         public async Task<CharacterGetResponse> GetCharacterById(CharacterGetRequest requestObject)
         {
             var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);

@@ -10,7 +10,7 @@ using OdysseyServer.Persistence;
 namespace OdysseyServer.Persistence.Migrations
 {
     [DbContext(typeof(OdysseyDbContext))]
-    [Migration("20210307230741_InitialMigration")]
+    [Migration("20210308095905_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

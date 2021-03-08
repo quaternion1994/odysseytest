@@ -22,12 +22,14 @@ message Ability
         int32 level = 3;
         int32 requiredLevel = 4;
         AbilityStats stats = 5;
+        bytes rowVersion = 6;
 }
 message AbilityStats
     {
         int64 id = 1;
         int32 attack = 2;
         int32 defence = 3;
+        bytes rowVersion = 4;
 }
 
 message AllCharacter
@@ -118,6 +120,41 @@ message CharacterGetRequest
 message CharacterGetResponse
 {
     Character character = 1;
+}
+
+message AbilityGetRequest
+{
+    int64 abilityId = 1;
+}
+
+message AbilityGetResponse
+{
+    Ability ability = 1;
+}
+
+message AbilityAddRequest
+{
+    Ability ability = 1;
+}
+
+message AbilityAddResponse
+{
+    Ability ability = 1;
+}
+
+message AbilityUpdateRequest
+{
+    Ability ability = 1;
+}
+
+message AbilityUpdateResponse
+{
+    Ability ability = 1;
+}
+
+message AbilityDeleteRequest
+{
+    int64 abilityId = 1;
 }
 
 

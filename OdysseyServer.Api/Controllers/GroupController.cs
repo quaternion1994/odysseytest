@@ -43,7 +43,7 @@ namespace OdysseyServer.Api.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAbilityById(long id)
+        public async Task<IActionResult> GetGroupById(long id)
         {
             var ability = await _groupService.GetGroupById(id);
             var data = ability.ToByteArray();

@@ -12,16 +12,16 @@ namespace OdysseyServer.Services.Mappers
         public MappingProfile()
         {
             // Add as many of these lines as you need to map your objects
-            CreateMap<Character, CharacterDbo>();
-            CreateMap<CharacterDbo, Character>();
+            CreateMap<Character, CharacterDbo>().ForMember(x => x.RowVersion, y => y.Ignore()); ;
+            CreateMap<CharacterDbo, Character>().ForMember(x => x.RowVersion, y => y.Ignore()); ;
             CreateMap<AllCharacterDbo, AllCharacter>();
-            CreateMap<Ability, AbilityDbo>();
-            CreateMap<AbilityDbo, Ability>();
+            CreateMap<Ability, AbilityDbo>().ForMember(x => x.RowVersion, y => y.Ignore());
+            CreateMap<AbilityDbo, Ability>().ForMember(x => x.RowVersion, y => y.Ignore());
             CreateMap<AllAbilityDbo, AllAbility>();
-            CreateMap<AbilityStatsDbo, AbilityStats>();
-            CreateMap<AbilityStats, AbilityStatsDbo>();
-            CreateMap<Group, GroupDbo>();
-            CreateMap<GroupDbo, Group>();
+            CreateMap<AbilityStatsDbo, AbilityStats>().ForMember(x => x.RowVersion, y => y.Ignore()); ;
+            CreateMap<AbilityStats, AbilityStatsDbo>().ForMember(x => x.RowVersion, y => y.Ignore()); ;
+            CreateMap<Group, GroupDbo>().ForMember(x => x.RowVersion, y => y.Ignore()); ;
+            CreateMap<GroupDbo, Group>().ForMember(x => x.RowVersion, y => y.Ignore()); ;
             CreateMap<AllGroupDbo, AllGroup>();
         }
     }

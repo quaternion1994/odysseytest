@@ -31,66 +31,46 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // GET api/ability
-        [HttpGet("")]
-        public async Task<IActionResult> GetAbilityById(long id)
+        [HttpPost("byid")]
+        public async Task<IActionResult> GetAbilityById()
         {
-            var ability = await _abilityService.GetAbilityById(id);
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = AbilityGetRequest.Parser.ParseFrom(stream);
+            var ability = await _abilityService.GetAbilityById(requestObject);
             var data = ability.ToByteArray();
             return File(data, "application/octet-stream");
         }
 
         // POST api/ability
         [HttpPost]
-        public async Task<IActionResult> Post()
-        {
-            /*var ability = new Ability
-            {
-                Level = 1,
-                RequiredLevel = 4,
-                Name = "Fireball",
-                Stats = new AbilityStats
-                {
-                    Attack = 10,
-                    Defence = 20
-                }
-            };*/
+        public async Task<IActionResult> AddAbility()
+        {           
             var stream = Request.BodyReader.AsStream();
-            var ability = Ability.Parser.ParseFrom(stream);
-            //seria
-            await _abilityService.CreateAbility(ability);
-
-            return Ok();
+            var requestObject = AbilityAddRequest.Parser.ParseFrom(stream);
+            var result = await _abilityService.CreateAbility(requestObject);
+            var data = result.ToByteArray();
+            return File(data, "application/octet-stream");
         }
 
         // PUT api/ability
         [HttpPut("")]
         public async Task<IActionResult> AbilityUpdate()
-        {
-            var ability = new Ability
-            {
-                Level = 1,
-                RequiredLevel = 4,
-                Name = "Frostball",
-                Stats = new AbilityStats
-                {
-                    Attack = 10,
-                    Defence = 20,
-                    Id = 1
-                },
-                Id = 1
-            };
-            /*var stream = Request.BodyReader.AsStream();
-            var person = Character.Parser.ParseFrom(stream);*/
-            var result = await _abilityService.UpdateAbility(ability);
+        {           
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = AbilityUpdateRequest.Parser.ParseFrom(stream);
+            
+            var result = await _abilityService.UpdateAbility(requestObject);
             var data = result.ToByteArray();
             return File(data, "application/octet-stream");
         }
 
         // DELETE api/ability
         [HttpDelete("")]
-        public async Task<IActionResult> AbilityDelete(long id)
-        {
-            await _abilityService.DeleteAbility(id);
+        public async Task<IActionResult> AbilityDelete()
+        {           
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = AbilityDeleteRequest.Parser.ParseFrom(stream);
+            await _abilityService.DeleteAbility(requestObject);
             return Ok();
         }
     }

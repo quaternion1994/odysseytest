@@ -45,9 +45,9 @@ namespace OdysseyServer.Api.Controllers
         {                       
             var stream = Request.BodyReader.AsStream();
             var person = CharacterCreateRequest.Parser.ParseFrom(stream);
-            await _characterService.CreateCharacter(person);
-           
-            return Ok();
+            var result = await _characterService.CreateCharacter(person);
+            var data = result.ToByteArray();
+            return File(data, "application/octet-stream");
         }
 
         // PUT api/character

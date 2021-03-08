@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
+using Google.Protobuf;
 using OdysseyServer.ApiClient;
 using OdysseyServer.Persistence.Contracts;
 using OdysseyServer.Persistence.Entities;
 using OdysseyServer.Services.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using OdysseyServer.Services.Helpers;
 
 namespace OdysseyServer.Services
 {
@@ -21,17 +20,30 @@ namespace OdysseyServer.Services
             _mapper = mapper;
         }
 
-        public async Task<Ability> GetAbilityById(long id)
+        public async Task<AbilityGetResponse> GetAbilityById(AbilityGetRequest requestObject)
         {
-            var abilityDbo = await _unitOfWork.Ability.GetByID(id);
-            var ability = _mapper.Map<Ability>(abilityDbo);
-            return ability;
+            var abilityDbo = await _unitOfWork.Ability.GetByID(requestObject.AbilityId);
+            var ability = _mapper.Map<Ability>(abilityDbo);            
+            ability.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.RowVersion);
+            ability.Stats.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.Stats.RowVersion);
+            var result = new AbilityGetResponse
+            {
+                Ability = ability
+            };
+            return result;
         }
 
-        public async Task CreateAbility(Ability ability)
+        public async Task<AbilityAddResponse> CreateAbility(AbilityAddRequest requestObject)
         {
-            var abilityDbo = _mapper.Map<AbilityDbo>(ability);
+            var abilityDbo = _mapper.Map<AbilityDbo>(requestObject.Ability);
             await _unitOfWork.Ability.Insert(abilityDbo);
+            var abilityCreatedDbo = await _unitOfWork.Ability.GetByID(abilityDbo.Id);
+            var ability = _mapper.Map<Ability>(abilityCreatedDbo);
+            var result = new AbilityAddResponse
+            {
+                Ability = ability
+            };
+            return result;
         }
 
         public async Task<AllAbility> GetAllAbilities()
@@ -41,22 +53,28 @@ namespace OdysseyServer.Services
             {
                 Abilities = abilitiesDbo
             };
-            var character = _mapper.Map<AllAbility>(a);
-            return character;
+            var ability = _mapper.Map<AllAbility>(a);
+            return ability;
         }
 
-        public async Task<Ability> UpdateAbility(Ability ability)
+        public async Task<AbilityUpdateResponse> UpdateAbility(AbilityUpdateRequest requestObject)
         {
-            var abilityDbo = _mapper.Map<AbilityDbo>(ability);
+            var abilityDbo = _mapper.Map<AbilityDbo>(requestObject.Ability);            
+            abilityDbo.RowVersion = requestObject.Ability.RowVersion.ToByteArray();
+            abilityDbo.Stats.RowVersion = requestObject.Ability.Stats.RowVersion.ToByteArray();
             await _unitOfWork.Ability.Update(abilityDbo);
-            var characterDboUpdated = await _unitOfWork.Ability.GetByID(abilityDbo.Id);
-            var result = _mapper.Map<Ability>(characterDboUpdated);
+            var abilityDboUpdated = await _unitOfWork.Ability.GetByID(abilityDbo.Id);
+            var ability = _mapper.Map<Ability>(abilityDboUpdated);
+            var result = new AbilityUpdateResponse
+            {
+                Ability = ability
+            };
             return result;
         }
 
-        public async Task DeleteAbility(long id)
+        public async Task DeleteAbility(AbilityDeleteRequest requestObject)
         {
-            await _unitOfWork.Ability.Delete(id);
+            await _unitOfWork.Ability.Delete(requestObject.AbilityId);
         }
     }
 }
