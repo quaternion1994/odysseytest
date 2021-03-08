@@ -5,11 +5,17 @@ using System;
 
 namespace OdysseyServer.Persistence.Configurations
 {
-    internal class AbilityEntityTypeConfiguration : IEntityTypeConfiguration<Ability>
+    internal class AbilityEntityTypeConfiguration : IEntityTypeConfiguration<AbilityDbo>
     {
-        public void Configure(EntityTypeBuilder<Ability> builder)
+        public void Configure(EntityTypeBuilder<AbilityDbo> builder)
         {
-            builder.ToTable("Abilities").HasKey(k => k.Id);
+            builder.ToTable("Ability");
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).HasColumnName("Id");
+            builder.Property(e => e.Name).HasColumnName("Name").IsRequired().HasMaxLength(100);
+            builder.Property(x => x.RequiredLevel).HasColumnName("RequiredLevel");
+            builder.Property(e => e.Level).HasColumnName("Level");
+            builder.Property(a => a.RowVersion).IsRowVersion();
         }
     }
 }

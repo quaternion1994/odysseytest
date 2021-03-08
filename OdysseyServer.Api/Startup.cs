@@ -3,6 +3,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OdysseyServer.Persistence;
+using Microsoft.EntityFrameworkCore;
+using OdysseyServer.Services;
+using OdysseyServer.Services.Contracts;
+using OdysseyServer.Persistence.Contracts;
+using OdysseyServer.Persistence.Repository;
+using OdysseyServer.Api.Middleware;
+using AutoMapper;
+using OdysseyServer.Services.Mappers;
 
 namespace OdysseyServer.Api
 {
@@ -20,6 +29,25 @@ namespace OdysseyServer.Api
         {
             services.AddControllers();
             services.AddSwaggerGen();
+            services.AddDbContext<OdysseyDbContext>(options =>
+                options.UseSqlServer(Configuration["DbConfiguration:ConnectionStrings"]));
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration["CacheConfiguration:Host"];
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICharacterService, CharacterService>();
+            services.AddScoped<IAbilityService, AbilityService>();
+            services.AddScoped<IGroupService, GroupService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +64,7 @@ namespace OdysseyServer.Api
 
             app.UseAuthorization();
 
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwagger();
