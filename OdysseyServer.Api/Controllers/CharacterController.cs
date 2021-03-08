@@ -40,7 +40,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // POST api/character
-        [HttpPost("create")]
+        [HttpPost("")]
         public async Task<IActionResult> CharacterCreate()
         {
             var stream = Request.BodyReader.AsStream();

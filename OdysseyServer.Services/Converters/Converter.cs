@@ -3,6 +3,7 @@ using OdysseyServer.Persistence.Entities;
 using OdysseyServer.Services.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace OdysseyServer.Services.Converters
@@ -11,19 +12,34 @@ namespace OdysseyServer.Services.Converters
     {
         public static AbilityDbo UpdateDboByAbility(Ability ability, AbilityDbo abilityDbo)
         {
-            abilityDbo.Level = ability.Level;
-            abilityDbo.Stats.Attack = ability.Stats.Attack;
-            abilityDbo.Stats.Defence = ability.Stats.Defence;
+            abilityDbo.Id = ability.Id;
+            abilityDbo.Level = ability.Level;            
             abilityDbo.RequiredLevel = ability.RequiredLevel;
             abilityDbo.Name = ability.Name;
             abilityDbo.RowVersion = ability.RowVersion.ToByteArray();
             abilityDbo.Stats.RowVersion = ability.Stats.RowVersion.ToByteArray();
+            if (ability.Stats != null)
+            {
+                abilityDbo.Stats.Attack = ability.Stats != null ? ability.Stats.Attack : abilityDbo.Stats.Attack;
+                abilityDbo.Stats.Defence = ability.Stats != null ? ability.Stats.Defence : abilityDbo.Stats.Defence;
+            }
             return abilityDbo;
+        }
+
+        public static CharacterDbo UpdateDboByCharacter(Character character, CharacterDbo characterDbo)
+        {
+            characterDbo.Level = character.Level;
+            characterDbo.GearTier = character.GearTier;
+            characterDbo.Name = character.Name;
+            characterDbo.Power = character.Power;
+            characterDbo.RowVersion = character.RowVersion.ToByteArray();
+            characterDbo.Xp = character.Xp;
+            return characterDbo;
         }
 
         public static CharacterDbo CharacterToCharacterDbo(Character character, CharacterDbo characterDbo, List<AbilityDbo> abilities, List<GroupDbo> groups)
         {
-
+            characterDbo.Id = character.Id;
             characterDbo.GearTier = character.GearTier;
             characterDbo.Level = character.Level;
             characterDbo.Name = character.Name;
@@ -38,6 +54,7 @@ namespace OdysseyServer.Services.Converters
 
         public static Ability AbilityDboToAbility(Ability ability, AbilityDbo abilityDbo)
         {
+            ability.Id = abilityDbo.Id;
             ability.Stats = new AbilityStats();
             ability.Level = abilityDbo.Level;
             ability.Stats.Attack = abilityDbo.Stats.Attack;
@@ -45,21 +62,45 @@ namespace OdysseyServer.Services.Converters
             ability.RequiredLevel = abilityDbo.RequiredLevel;
             ability.Name = abilityDbo.Name;
             ability.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.RowVersion);
-            ability.Stats.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.Stats.RowVersion);
+            ability.Stats.RowVersion = abilityDbo.Stats != null ? Helper.ConvertByteArryyToByteString(abilityDbo.Stats.RowVersion) : ability.Stats.RowVersion;
             return ability;
+        }
+
+        public static AbilityDbo AbilityToAbilityDbo(Ability ability, AbilityDbo abilityDbo)
+        {
+            abilityDbo.Id = ability.Id;
+            abilityDbo.Stats = new AbilityStatsDbo();
+            abilityDbo.Level = ability.Level;
+            abilityDbo.Stats.Attack = ability.Stats != null ? ability.Stats.Attack : abilityDbo.Stats.Attack;
+            abilityDbo.Stats.Defence = ability.Stats != null ? ability.Stats.Defence : abilityDbo.Stats.Defence;
+            abilityDbo.RequiredLevel = ability.RequiredLevel;
+            abilityDbo.Name = ability.Name;
+            abilityDbo.RowVersion = ability.RowVersion != null ? ability.RowVersion.ToByteArray() : abilityDbo.RowVersion;
+            abilityDbo.Stats.RowVersion = ability.Stats != null ? ability.Stats.RowVersion.ToByteArray() : abilityDbo.Stats.RowVersion;
+            return abilityDbo;
         }
 
         public static Group GroupDboToGroup(Group group, GroupDbo groupDbo)
         {
+            group.Id = groupDbo.Id;
             group.IconName = groupDbo.IconName;
             group.Name = groupDbo.Name;
             group.RowVersion = Helper.ConvertByteArryyToByteString(groupDbo.RowVersion);
             return group;
         }
 
+        public static GroupDbo GroupToGroupDbo(Group group, GroupDbo groupDbo)
+        {
+            groupDbo.Id = group.Id;
+            groupDbo.IconName = group.IconName;
+            groupDbo.Name = group.Name;
+            groupDbo.RowVersion = group.RowVersion.ToByteArray();
+            return groupDbo;
+        }
+
         public static Character CharacterDboToCharacter(Character character, CharacterDbo characterDbo, List<Ability> abilities, List<Group> groups)
         {
-
+            character.Id = characterDbo.Id;
             character.GearTier = characterDbo.GearTier;
             character.Level = characterDbo.Level;
             character.Name = characterDbo.Name;

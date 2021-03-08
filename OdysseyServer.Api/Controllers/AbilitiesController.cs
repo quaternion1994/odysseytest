@@ -31,7 +31,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // GET api/ability
-        [HttpPost]
+        [HttpPost("byId")]
         public async Task<IActionResult> GetAbilityById()
         {
             var stream = Request.BodyReader.AsStream();
@@ -42,7 +42,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // POST api/ability
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> AddAbility()
         {           
             var stream = Request.BodyReader.AsStream();
@@ -53,7 +53,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // PUT api/ability
-        [HttpPut("")]
+        [HttpPut]
         public async Task<IActionResult> AbilityUpdate()
         {           
             var stream = Request.BodyReader.AsStream();
