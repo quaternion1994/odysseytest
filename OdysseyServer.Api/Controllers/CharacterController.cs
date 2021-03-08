@@ -30,20 +30,21 @@ namespace OdysseyServer.Api.Controllers
 
         // GET api/character
         [HttpGet("")]
-        public async Task<IActionResult> GetCharacterById(long id)
+        public async Task<IActionResult> GetCharacterById()
         {
-            var character = await _characterService.GetCharacterById(id);
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = CharacterGetRequest.Parser.ParseFrom(stream);           
+            var character = await _characterService.GetCharacterById(requestObject);
             var data = character.ToByteArray();
             return File(data, "application/octet-stream");
         }
 
         // POST api/character
         [HttpPost]
-        public async Task<IActionResult> Post()
-        {            
-            
+        public async Task<IActionResult> CharacterCreate()
+        {                       
             var stream = Request.BodyReader.AsStream();
-            var person = Character.Parser.ParseFrom(stream);
+            var person = CharacterCreateRequest.Parser.ParseFrom(stream);
             await _characterService.CreateCharacter(person);
            
             return Ok();
@@ -54,25 +55,48 @@ namespace OdysseyServer.Api.Controllers
         public async Task<IActionResult> CharacterUpdate()
         {           
             var stream = Request.BodyReader.AsStream();
-            var person = Character.Parser.ParseFrom(stream);
-            var result = await _characterService.UpdateCharacter(person);
+            var requestObject = CharacterUpdateRequest.Parser.ParseFrom(stream);
+            var result = await _characterService.UpdateCharacter(requestObject);
             var data = result.ToByteArray();
             return File(data, "application/octet-stream");
         }
 
         // DELETE api/character
         [HttpDelete("")]
-        public async Task<IActionResult> CharacterDelete(long id)
+        public async Task<IActionResult> CharacterDelete()
         {
-            await _characterService.DeleteCharacter(id);
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = CharacterDeleteRequest.Parser.ParseFrom(stream);
+            await _characterService.DeleteCharacter(requestObject);
             return Ok();
         }
 
-        // PUT api/character/lvlboost
         [HttpPut("lvlboost")]
-        public async Task<IActionResult> CharecterLevelBoost(long id, int lvlNumber)
+        public async Task<IActionResult> CharecterLevelBoost()
         {
-            var character = await _characterService.CharacterLevelBoost(id, lvlNumber);
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = CharacterLevelBoostRequest.Parser.ParseFrom(stream);
+            var character = await _characterService.CharacterLevelBoost(requestObject);
+            var data = character.ToByteArray();
+            return File(data, "application/octet-stream");
+        }
+
+        [HttpPost("addgroup")]
+        public async Task<IActionResult> CharacterAddGroup()
+        {
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = CharacterAddGroupRequest.Parser.ParseFrom(stream);
+            var character = await _characterService.CharacterAddGroup(requestObject);
+            var data = character.ToByteArray();
+            return File(data, "application/octet-stream");
+        }
+
+        [HttpPost("addabilities")]
+        public async Task<IActionResult> CharacterAddAbilities()
+        {
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = CharacterAddAbilitiesRequest.Parser.ParseFrom(stream);
+            var character = await _characterService.CharacterAddAbilities(requestObject);
             var data = character.ToByteArray();
             return File(data, "application/octet-stream");
         }

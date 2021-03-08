@@ -52,5 +52,73 @@ message AllGroup
         repeated Group group = 1;
 }
 
+message CharacterAddGroupRequest
+{
+    int64 characterId = 1;
+    repeated int64 groupId = 2;
+}
+
+message CharacterAddGroupResponse
+{
+    Character character = 1;
+}
+
+message CharacterLevelBoostRequest
+{
+    int64 characterId = 1;
+    int32 levelNumber = 2;
+}
+
+message CharacterLevelBoostResponse
+{
+    Character character = 1;
+}
+
+message CharacterAddAbilitiesRequest
+{
+    int64 characterId = 1;
+    repeated int64 abilities = 2;
+}
+
+message CharacterAddAbilitiesResponse
+{
+    Character character = 1;
+}
+
+message CharacterDeleteRequest
+{
+    int64 characterId = 1;
+}
+
+message CharacterUpdateRequest
+{
+    Character character = 1;
+}
+
+message CharacterUpdateResponse
+{
+    Character character = 1;
+}
+
+message CharacterCreateRequest
+{
+    Character character = 1;
+}
+
+message CharacterCreateResponse
+{
+    Character character = 1;
+}
+
+message CharacterGetRequest
+{
+    int64 characterId = 1;
+}
+
+message CharacterGetResponse
+{
+    Character character = 1;
+}
+
 
 

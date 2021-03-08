@@ -9,11 +9,13 @@ namespace OdysseyServer.Services.Contracts
 {
     public interface ICharacterService
     {
-        Task CreateCharacter(Character character);
-        Task<Character> GetCharacterById(long Id);
+        Task<CharacterCreateResponse> CreateCharacter(CharacterCreateRequest requestObject);
+        Task<CharacterGetResponse> GetCharacterById(CharacterGetRequest requestObject);
         Task<AllCharacter> GetAllCharacters();
-        Task<Character> UpdateCharacter(Character character);
-        Task DeleteCharacter(long id);
-        Task<Character> CharacterLevelBoost(long id, int lvlNumber);
+        Task<CharacterUpdateResponse> UpdateCharacter(CharacterUpdateRequest requestObject);
+        Task DeleteCharacter(CharacterDeleteRequest requestObject);
+        Task<CharacterAddGroupResponse> CharacterAddGroup(CharacterAddGroupRequest requestObject);
+        Task<CharacterLevelBoostResponse> CharacterLevelBoost(CharacterLevelBoostRequest requestObject);
+        Task<CharacterAddAbilitiesResponse> CharacterAddAbilities(CharacterAddAbilitiesRequest requestObject);
     }
 }

@@ -35,6 +35,6 @@ namespace OdysseyServer.Persistence.Repository
         public async Task<List<CharacterDbo>> GetAllCharacters()
         {
             return await dbSet.Include(x => x.CharacterAbilities).ThenInclude(x => x.Ability).Include(x => x.CharacterGroups).ThenInclude(x => x.Group).ToListAsync();
-        }
+        }        
     }
 }

@@ -21,9 +21,9 @@ namespace OdysseyServer.Services
             _mapper = mapper;
         }
 
-        public async Task<Character> GetCharacterById(long id)
+        public async Task<CharacterGetResponse> GetCharacterById(CharacterGetRequest requestObject)
         {
-            var characterDbo = await _unitOfWork.Character.GetCharacterById(id);
+            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
             var character = _mapper.Map<Character>(characterDbo);
 
             foreach (var elem in characterDbo.CharacterAbilities)
@@ -34,18 +34,23 @@ namespace OdysseyServer.Services
 
             foreach (var elem in characterDbo.CharacterGroups)
             {
-                var mappedGroup= _mapper.Map<Group>(elem.Group);
+                var mappedGroup = _mapper.Map<Group>(elem.Group);
                 character.Group.Add(mappedGroup);
             }
-            return character;
+
+            var result = new CharacterGetResponse
+            {
+                Character = character
+            };
+            return result;
         }
 
-        public async Task CreateCharacter(Character character)
+        public async Task<CharacterCreateResponse> CreateCharacter(CharacterCreateRequest requestObject)
         {
-            var characterDbo = _mapper.Map<CharacterDbo>(character);
+            var characterDbo = _mapper.Map<CharacterDbo>(requestObject.Character);
             await _unitOfWork.Character.Insert(characterDbo);
             var characterAbilities = new List<CharacterAbilitiesDbo>();
-            foreach (var elem in character.Ability)
+            foreach (var elem in requestObject.Character.Ability)
             {
                 characterAbilities.Add(new CharacterAbilitiesDbo
                 {
@@ -54,6 +59,14 @@ namespace OdysseyServer.Services
                 });
             }
             await _unitOfWork.CharacterAbilities.InsertMany(characterAbilities);
+            var characterDboCreated = await _unitOfWork.Character.GetByID(characterDbo.Id);
+            var character = _mapper.Map<Character>(characterDboCreated);
+            var result = new CharacterCreateResponse
+            {
+                Character = character
+            };
+            return result;
+
         }
 
         public async Task<AllCharacter> GetAllCharacters()
@@ -67,28 +80,78 @@ namespace OdysseyServer.Services
             return character;
         }
 
-        public async Task<Character> UpdateCharacter(Character character)
+        public async Task<CharacterUpdateResponse> UpdateCharacter(CharacterUpdateRequest requestObject)
         {
-            var characterDbo = _mapper.Map<CharacterDbo>(character);
+            var characterDbo = _mapper.Map<CharacterDbo>(requestObject.Character);
             await _unitOfWork.Character.Update(characterDbo);
             var characterDboUpdated = await _unitOfWork.Character.GetByID(characterDbo.Id);
-            var result = _mapper.Map<Character>(characterDboUpdated);
+            var character = _mapper.Map<Character>(characterDboUpdated);
+            var result = new CharacterUpdateResponse
+            {
+                Character = character
+            };
             return result;
         }
 
-        public async Task DeleteCharacter(long id)
+        public async Task DeleteCharacter(CharacterDeleteRequest requestObject)
         {
-            await _unitOfWork.CharacterAbilities.DeleteManyByCharacterId(id);
-            await _unitOfWork.CharacterAbilities.DeleteGroupsByCharacterId(id);
-            await _unitOfWork.Character.Delete(id);
+            await _unitOfWork.CharacterAbilities.DeleteManyByCharacterId(requestObject.CharacterId);
+            await _unitOfWork.CharacterAbilities.DeleteGroupsByCharacterId(requestObject.CharacterId);
+            await _unitOfWork.Character.Delete(requestObject.CharacterId);
         }
 
-        public async Task<Character> CharacterLevelBoost(long id, int lvlNumber)
+        public async Task<CharacterLevelBoostResponse> CharacterLevelBoost(CharacterLevelBoostRequest requestObject)
         {
-            await _unitOfWork.Character.CharacterLevelBoost(id, lvlNumber);
-            var characterDbo = await _unitOfWork.Character.GetByID(id);
+            await _unitOfWork.Character.CharacterLevelBoost(requestObject.CharacterId, requestObject.LevelNumber);
+            var characterDbo = await _unitOfWork.Character.GetByID(requestObject.CharacterId);
             var character = _mapper.Map<Character>(characterDbo);
-            return character;
+            var result = new CharacterLevelBoostResponse
+            {
+                Character = character
+            };
+            return result;
+        }
+
+        public async Task<CharacterAddGroupResponse> CharacterAddGroup(CharacterAddGroupRequest requestObject)
+        {
+            var characterGroups = new List<CharacterGroupsDbo>();
+            foreach (var elem in requestObject.GroupId)
+            {
+                characterGroups.Add(new CharacterGroupsDbo
+                {
+                    CharacterId = requestObject.CharacterId,
+                    GroupId = elem
+                });
+            }
+            await _unitOfWork.Group.AddGroupForCharacter(characterGroups);
+            var characterDbo = await _unitOfWork.Character.GetByID(requestObject.CharacterId);
+            var character = _mapper.Map<Character>(characterDbo);
+            var result = new CharacterAddGroupResponse
+            {
+                Character = character
+            };
+            return result;
+        }
+
+        public async Task<CharacterAddAbilitiesResponse> CharacterAddAbilities(CharacterAddAbilitiesRequest requestObject)
+        {
+            var characterAbilities = new List<CharacterAbilitiesDbo>();
+            foreach (var elem in requestObject.Abilities)
+            {
+                characterAbilities.Add(new CharacterAbilitiesDbo
+                {
+                    CharacterId = requestObject.CharacterId,
+                    AbilityId = elem
+                });
+            }
+            await _unitOfWork.CharacterAbilities.InsertMany(characterAbilities);
+            var characterDbo = await _unitOfWork.Character.GetByID(requestObject.CharacterId);
+            var character = _mapper.Map<Character>(characterDbo);
+            var result = new CharacterAddAbilitiesResponse
+            {
+                Character = character
+            };
+            return result;
         }
     }
 }
