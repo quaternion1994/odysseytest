@@ -8,5 +8,6 @@ namespace OdysseyServer.Persistence.Contracts
 {
     public interface IGroupRepository : IRepository<GroupDbo>
     {
+        Task<List<GroupDbo>> GetByArrayId(List<long> idsLIst);
     }
 }

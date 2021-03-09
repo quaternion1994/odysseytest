@@ -22,5 +22,10 @@ namespace OdysseyServer.Persistence.Repository
         {
             return await dbSet.Include(x => x.Stats).FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async virtual Task<List<AbilityDbo>> GetByArrayId(List<long> idsLIst)
+        {
+            return await dbSet.Where(x => idsLIst.Contains(x.Id)).Include(x => x.Stats).ToListAsync();
+        }
     }
 }

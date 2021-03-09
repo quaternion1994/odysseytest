@@ -26,7 +26,7 @@ namespace OdysseyServer.Api.Controllers
 
         [HttpGet("/api/groups")]
         public async Task<IActionResult> GetAllGroups()
-        {
+        {            
             var cachedGroups = await _distributedCache.GetAsync(cacheKey);
             if (cachedGroups != null)
             {
@@ -36,16 +36,21 @@ namespace OdysseyServer.Api.Controllers
             {
                 var groups = await _groupService.GetAllGroups();
                 var data = groups.ToByteArray();
-                await _distributedCache.SetAsync(cacheKey, data);
+                var cacheExpirationOptions = new DistributedCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+                await _distributedCache.SetAsync(cacheKey, data, cacheExpirationOptions);
                 return File(data, "application/octet-stream");
             }         
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetGroupById(long id)
+        [HttpPost("byid")]
+        public async Task<IActionResult> GetGroupById()
         {
-            var ability = await _groupService.GetGroupById(id);
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = GroupByIdRequest.Parser.ParseFrom(stream);
+            var ability = await _groupService.GetGroupById(requestObject);
             var data = ability.ToByteArray();
             return File(data, "application/octet-stream");
         }
@@ -53,30 +58,20 @@ namespace OdysseyServer.Api.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateGroup()
-        {           
-            var stream = Request.BodyReader.AsStream();
-            var group = Group.Parser.ParseFrom(stream);
-            await _groupService.CreateGroup(group);
-            //_distributedCache.RemoveAsync(cacheKey, data);
-            return Ok();
-        }
-
-
-        [HttpPut]
-        public async Task<IActionResult> GroupUpdate()
         {
             var stream = Request.BodyReader.AsStream();
-            var group = Group.Parser.ParseFrom(stream);
-            var result = await _groupService.UpdateGroup(group);
+            var requestObject = GroupAddRequest.Parser.ParseFrom(stream);
+            var result = await _groupService.CreateGroup(requestObject);
             var data = result.ToByteArray();
             return File(data, "application/octet-stream");
         }
 
-        // DELETE api/ability
-        [HttpDelete]
-        public async Task<IActionResult> GroupDelete(long id)
+        [HttpPost("delete")]
+        public async Task<IActionResult> GroupDelete()
         {
-            await _groupService.DeleteGroup(id);
+            var stream = Request.BodyReader.AsStream();
+            var requestObject = GroupDeleteRequest.Parser.ParseFrom(stream);
+            await _groupService.DeleteGroup(requestObject);
             return Ok();
         }
     }

@@ -7,6 +7,7 @@ using OdysseyServer.Services.Converters;
 using OdysseyServer.Services.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,20 +28,8 @@ namespace OdysseyServer.Services
             var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
             var abilitiesDbo = characterDbo.Abilities;
             var groupsDbo = characterDbo.Groups;
-            var listOfAbilities = new List<Ability>();
-            var listOfGroups = new List<Group>();
-            foreach (var elem in abilitiesDbo)
-            {
-                var convertedAbility = new Ability();
-                convertedAbility = Converter.AbilityDboToAbility(convertedAbility, elem);
-                listOfAbilities.Add(convertedAbility);
-            }
-            foreach (var elem in groupsDbo)
-            {
-                var convertedGroup = new Group();
-                convertedGroup = Converter.GroupDboToGroup(convertedGroup, elem);
-                listOfGroups.Add(convertedGroup);
-            }
+            var listOfAbilities = Helper.ConvertToAbility(abilitiesDbo.ToList());
+            var listOfGroups = Helper.ConvertToGroup(groupsDbo.ToList());
             var character = new Character();
             character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
             var result = new CharacterGetResponse
@@ -53,27 +42,19 @@ namespace OdysseyServer.Services
         public async Task<CharacterCreateResponse> CreateCharacter(CharacterCreateRequest requestObject)
         {
             var characterDbo = new CharacterDbo();            
-            var abilityDboList = new List<AbilityDbo>();
-            var groupDboList = new List<GroupDbo>();
-            foreach (var elem in requestObject.Character.Ability)
-            {
-                var abilityDbo = _mapper.Map<AbilityDbo>(elem);
-                abilityDboList.Add(abilityDbo);
-            }
-            foreach (var elem in requestObject.Character.Group)
-            {
-                var groupDbo = _mapper.Map<GroupDbo>(elem);
-                groupDboList.Add(groupDbo);
-            }
+            var abilityDboList = Helper.ConvertToAbilityDbo(requestObject.Character.Ability.ToList());
+            var groupDboList = Helper.ConvertToGroupDbo(requestObject.Character.Group.ToList());            
             Converter.CharacterToCharacterDbo(requestObject.Character, characterDbo, abilityDboList, groupDboList);
-            await _unitOfWork.Character.Insert(characterDbo);           
-            var character = _mapper.Map<Character>(characterDbo);
+            await _unitOfWork.Character.Insert(characterDbo);
+            var character = new Character();
+            var listOfAbilities = Helper.ConvertToAbility(characterDbo.Abilities.ToList());
+            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
+            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
             var result = new CharacterCreateResponse
             {
                 Character = character
             };
             return result;
-
         }
 
         public async Task<CharacterAllResponse> GetAllCharacters()
@@ -82,22 +63,8 @@ namespace OdysseyServer.Services
             var listOfCharacters = new List<Character>();
             foreach (var elem in characterDbo)
             {
-                var abilitiesDbo = elem.Abilities;
-                var groupsDbo = elem.Groups;
-                var listOfAbilities = new List<Ability>();
-                var listOfGroups = new List<Group>();
-                foreach (var ability in abilitiesDbo)
-                {
-                    var convertedAbility = new Ability();
-                    convertedAbility = Converter.AbilityDboToAbility(convertedAbility, ability);
-                    listOfAbilities.Add(convertedAbility);
-                }
-                foreach (var group in groupsDbo)
-                {
-                    var convertedGroup = new Group();
-                    convertedGroup = Converter.GroupDboToGroup(convertedGroup, group);
-                    listOfGroups.Add(convertedGroup);
-                }
+                var listOfAbilities = Helper.ConvertToAbility(elem.Abilities.ToList());
+                var listOfGroups = Helper.ConvertToGroup(elem.Groups.ToList());               
                 var convertedCharacter = new Character();
                 convertedCharacter = Converter.CharacterDboToCharacter(convertedCharacter, elem, listOfAbilities, listOfGroups);
                 listOfCharacters.Add(convertedCharacter);
@@ -115,10 +82,13 @@ namespace OdysseyServer.Services
 
         public async Task<CharacterUpdateResponse> UpdateCharacter(CharacterUpdateRequest requestObject)
         {
-            var characterDbo = _mapper.Map<CharacterDbo>(requestObject.Character);
-            await _unitOfWork.Character.Update(characterDbo);
-            var characterDboUpdated = await _unitOfWork.Character.GetByID(characterDbo.Id);
-            var character = _mapper.Map<Character>(characterDboUpdated);
+            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.Character.Id);
+            Converter.UpdateDboByCharacter(requestObject.Character, characterDbo);
+            await _unitOfWork.Character.SaveChangesAsync();
+            var character = new Character();
+            var listOfAbilities = Helper.ConvertToAbility(characterDbo.Abilities.ToList());
+            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
+            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
             var result = new CharacterUpdateResponse
             {
                 Character = character
@@ -145,44 +115,36 @@ namespace OdysseyServer.Services
 
         public async Task<CharacterAddGroupResponse> CharacterAddGroup(CharacterAddGroupRequest requestObject)
         {
-            /*var characterGroups = new List<CharacterGroupsDbo>();
-            foreach (var elem in requestObject.GroupId)
-            {
-                characterGroups.Add(new CharacterGroupsDbo
-                {
-                    CharacterId = requestObject.CharacterId,
-                    GroupId = elem
-                });
-            }
-            await _unitOfWork.Group.AddGroupForCharacter(characterGroups);
-            var characterDbo = await _unitOfWork.Character.GetByID(requestObject.CharacterId);
-            var character = _mapper.Map<Character>(characterDbo);
+            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
+            var groupDbo = await _unitOfWork.Group.GetByArrayId(requestObject.GroupId.ToList());
+            groupDbo.ForEach(characterDbo.Groups.Add);
+            await _unitOfWork.Character.SaveChangesAsync();
+            var character = new Character();
+            var listOfAbilities = Helper.ConvertToAbility(characterDbo.Abilities.ToList());
+            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
+            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
             var result = new CharacterAddGroupResponse
             {
                 Character = character
-            };*/
-            return null;
+            };
+            return result;
         }
 
         public async Task<CharacterAddAbilitiesResponse> CharacterAddAbilities(CharacterAddAbilitiesRequest requestObject)
         {
-            //var characterAbilities = new List<CharacterAbilitiesDbo>();
-            //foreach (var elem in requestObject.Abilities)
-            //{
-            //    characterAbilities.Add(new CharacterAbilitiesDbo
-            //    {
-            //        CharacterId = requestObject.CharacterId,
-            //        AbilityId = elem
-            //    });
-            //}
-            //await _unitOfWork.CharacterAbilities.InsertMany(characterAbilities);
-            //var characterDbo = await _unitOfWork.Character.GetByID(requestObject.CharacterId);
-            //var character = _mapper.Map<Character>(characterDbo);
-            //var result = new CharacterAddAbilitiesResponse
-            //{
-            //    Character = character
-            //};
-            return null;
+            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
+            var groupDbo = await _unitOfWork.Ability.GetByArrayId(requestObject.Abilities.ToList());
+            groupDbo.ForEach(characterDbo.Abilities.Add);
+            await _unitOfWork.Character.SaveChangesAsync();
+            var character = new Character();
+            var listOfAbilities = Helper.ConvertToAbility(characterDbo.Abilities.ToList());
+            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
+            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
+            var result = new CharacterAddAbilitiesResponse
+            {
+                Character = character
+            };
+            return result;
         }
     }
 }

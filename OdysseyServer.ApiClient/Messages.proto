@@ -179,5 +179,34 @@ message CharacterAllResponse
     AllCharacter character = 1;
 }
 
+message GroupAddRequest
+{
+    Group group = 1;
+}
+
+message GroupAddResponse
+{
+    Group group = 1;
+}
+
+message GroupAllResponse
+{
+     AllGroup groups = 1;
+}
+
+message GroupByIdResponse
+{
+     Group group = 1;
+}
+message GroupByIdRequest
+{
+     int64 groupId = 1;
+}
+
+message GroupDeleteRequest
+{
+     int64 groupId = 1;
+}
+
 
 
