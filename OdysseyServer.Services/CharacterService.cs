@@ -96,9 +96,9 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task DeleteCharacter(CharacterDeleteRequest requestObject)
+        public async Task DeleteCharacter(long characterId)
         {
-            await _unitOfWork.Character.Delete(requestObject.CharacterId);
+            await _unitOfWork.Character.Delete(characterId);
         }
 
         public async Task<CharacterLevelBoostResponse> CharacterLevelBoost(CharacterLevelBoostRequest requestObject)

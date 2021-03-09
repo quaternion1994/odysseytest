@@ -61,13 +61,11 @@ namespace OdysseyServer.Api.Controllers
             return File(data, "application/octet-stream");
         }
 
-        // DELETE api/character
-        [HttpDelete("")]
-        public async Task<IActionResult> CharacterDelete()
+        // DELETE api/character/id
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> CharacterDelete(long id)
         {
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = CharacterDeleteRequest.Parser.ParseFrom(stream);
-            await _characterService.DeleteCharacter(requestObject);
+            await _characterService.DeleteCharacter(id);
             return Ok();
         }
 

@@ -19,6 +19,10 @@ namespace OdysseyServer.ApiClient
 
             return await httpClient.PostAsync(requestUri, messageBytes);
         }
+        public static async Task<HttpResponseMessage> DeleteProtobufAsync(this HttpClient httpClient, string requestUri)
+        {
+            return await httpClient.DeleteAsync(requestUri);
+        }
 
         public static async Task<HttpResponseMessage> PutProtobufAsync<T>(this HttpClient httpClient, string requestUri, IMessage<T> message) where T : Google.Protobuf.IMessage<T>
         {

@@ -13,7 +13,7 @@ namespace OdysseyServer.Services.Contracts
         Task<CharacterGetResponse> GetCharacterById(CharacterGetRequest requestObject);
         Task<CharacterAllResponse> GetAllCharacters();
         Task<CharacterUpdateResponse> UpdateCharacter(CharacterUpdateRequest requestObject);
-        Task DeleteCharacter(CharacterDeleteRequest requestObject);
+        Task DeleteCharacter(long characterId);
         Task<CharacterAddGroupResponse> CharacterAddGroup(CharacterAddGroupRequest requestObject);
         Task<CharacterLevelBoostResponse> CharacterLevelBoost(CharacterLevelBoostRequest requestObject);
         Task<CharacterAddAbilitiesResponse> CharacterAddAbilities(CharacterAddAbilitiesRequest requestObject);
