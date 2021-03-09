@@ -17,13 +17,14 @@ namespace OdysseyServer.Services.Converters
             abilityDbo.RequiredLevel = ability.RequiredLevel;
             abilityDbo.Name = ability.Name;
             abilityDbo.RowVersion = ability.RowVersion.ToByteArray();
-            abilityDbo.Stats.RowVersion = ability.Stats.RowVersion.ToByteArray();
             abilityDbo.AbilityType = ability.AbilityType;
             if (ability.Stats != null)
             {
+                abilityDbo.Stats.RowVersion = ability.Stats.RowVersion.ToByteArray();
                 abilityDbo.Stats.Attack = ability.Stats != null ? ability.Stats.Attack : abilityDbo.Stats.Attack;
                 abilityDbo.Stats.Defence = ability.Stats != null ? ability.Stats.Defence : abilityDbo.Stats.Defence;
             }
+
             return abilityDbo;
         }
 
