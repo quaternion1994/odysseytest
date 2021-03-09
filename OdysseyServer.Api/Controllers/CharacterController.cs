@@ -88,23 +88,14 @@ namespace OdysseyServer.Api.Controllers
             var data = character.ToByteArray();
             return File(data, "application/octet-stream");
         }
+       
 
-        [HttpPost("addabilities")]
-        public async Task<IActionResult> CharacterAddAbilities()
-        {
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = CharacterAddAbilitiesRequest.Parser.ParseFrom(stream);
-            var character = await _characterService.CharacterAddAbilities(requestObject);
-            var data = character.ToByteArray();
-            return File(data, "application/octet-stream");
-        }
-
-        [HttpPost("abilityBoost")]
+        [HttpPut("abilityBoost")]
         public async Task<IActionResult> CharacterBoostAbility()
         {
             var stream = Request.BodyReader.AsStream();
-            var requestObject = CharacterAddAbilitiesRequest.Parser.ParseFrom(stream);
-            var character = await _characterService.CharacterAddAbilities(requestObject);
+            var requestObject = CharacterAbilityBoostRequest.Parser.ParseFrom(stream);
+            var character = await _characterService.CharacterBoostAbilities(requestObject);
             var data = character.ToByteArray();
             return File(data, "application/octet-stream");
         }

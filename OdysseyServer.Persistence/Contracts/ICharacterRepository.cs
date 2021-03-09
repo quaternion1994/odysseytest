@@ -11,5 +11,7 @@ namespace OdysseyServer.Persistence.Contracts
         Task CharacterLevelBoost(long id, int lvlNumber);
         Task<CharacterDbo> GetCharacterById(long id);
         Task<List<CharacterDbo>> GetAllCharacters();
+        Task CharacterAbilityBoost(long characterId, long abilityId);
+        Task UnlockInitialAbility(long characterId, int characterLevel);
     }
 }

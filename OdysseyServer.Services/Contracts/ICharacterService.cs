@@ -16,6 +16,6 @@ namespace OdysseyServer.Services.Contracts
         Task DeleteCharacter(long characterId);
         Task<CharacterAddGroupResponse> CharacterAddGroup(CharacterAddGroupRequest requestObject);
         Task<CharacterLevelBoostResponse> CharacterLevelBoost(CharacterLevelBoostRequest requestObject);
-        Task<CharacterAddAbilitiesResponse> CharacterAddAbilities(CharacterAddAbilitiesRequest requestObject);
+        Task<CharacterAbilityBoostResponse> CharacterBoostAbilities(CharacterAbilityBoostRequest requestObject);
     }
 }

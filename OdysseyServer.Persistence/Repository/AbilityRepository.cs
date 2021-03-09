@@ -27,5 +27,10 @@ namespace OdysseyServer.Persistence.Repository
         {
             return await dbSet.Where(x => idsLIst.Contains(x.Id)).Include(x => x.Stats).ToListAsync();
         }
+
+        public async virtual Task<List<AbilityDbo>> GetInitialAbility()
+        {
+            return await dbSet.Where(x => x.RequiredLevel == 1).Include(x => x.Stats).ToListAsync();
+        }
     }
 }

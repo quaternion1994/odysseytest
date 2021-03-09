@@ -18,6 +18,7 @@ namespace OdysseyServer.Services.Converters
             abilityDbo.Name = ability.Name;
             abilityDbo.RowVersion = ability.RowVersion.ToByteArray();
             abilityDbo.Stats.RowVersion = ability.Stats.RowVersion.ToByteArray();
+            abilityDbo.AbilityType = ability.AbilityType;
             if (ability.Stats != null)
             {
                 abilityDbo.Stats.Attack = ability.Stats != null ? ability.Stats.Attack : abilityDbo.Stats.Attack;
@@ -34,6 +35,10 @@ namespace OdysseyServer.Services.Converters
             characterDbo.Power = character.Power;
             characterDbo.RowVersion = character.RowVersion.ToByteArray();
             characterDbo.Xp = character.Xp;
+            characterDbo.Offence = character.Offence;
+            characterDbo.Defence = character.Defence;
+            characterDbo.Health = character.Health;
+            characterDbo.XpToNextLevel = character.XpToNextLevel;
             return characterDbo;
         }
 
@@ -49,6 +54,10 @@ namespace OdysseyServer.Services.Converters
             characterDbo.Abilities = abilities;
             characterDbo.Groups = groups;
             characterDbo.RowVersion = character.RowVersion.ToByteArray();
+            characterDbo.Offence = character.Offence;
+            characterDbo.Defence = character.Defence;
+            characterDbo.Health = character.Health;
+            characterDbo.XpToNextLevel = character.XpToNextLevel;
             return characterDbo;
         }
 
@@ -61,6 +70,7 @@ namespace OdysseyServer.Services.Converters
             ability.Stats.Defence = abilityDbo.Stats.Defence;
             ability.RequiredLevel = abilityDbo.RequiredLevel;
             ability.Name = abilityDbo.Name;
+            ability.AbilityType = abilityDbo.AbilityType;
             ability.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.RowVersion);
             ability.Stats.RowVersion = abilityDbo.Stats != null ? Helper.ConvertByteArryyToByteString(abilityDbo.Stats.RowVersion) : ability.Stats.RowVersion;
             return ability;
@@ -75,6 +85,7 @@ namespace OdysseyServer.Services.Converters
             abilityDbo.Stats.Defence = ability.Stats != null ? ability.Stats.Defence : abilityDbo.Stats.Defence;
             abilityDbo.RequiredLevel = ability.RequiredLevel;
             abilityDbo.Name = ability.Name;
+            abilityDbo.AbilityType = ability.AbilityType;
             abilityDbo.RowVersion = ability.RowVersion != null ? ability.RowVersion.ToByteArray() : abilityDbo.RowVersion;
             abilityDbo.Stats.RowVersion = ability.Stats != null ? ability.Stats.RowVersion.ToByteArray() : abilityDbo.Stats.RowVersion;
             return abilityDbo;
@@ -110,6 +121,10 @@ namespace OdysseyServer.Services.Converters
             character.Ability.AddRange(abilities);
             character.Group.AddRange(groups);
             character.RowVersion = Helper.ConvertByteArryyToByteString(characterDbo.RowVersion);
+            character.Offence = characterDbo.Offence;
+            character.Defence = characterDbo.Defence;
+            character.Health = characterDbo.Health;
+            character.XpToNextLevel = characterDbo.XpToNextLevel;
             return character;
         }
     }

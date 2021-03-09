@@ -5,6 +5,7 @@ using OdysseyServer.Services.Converters;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace OdysseyServer.Services.Helpers
@@ -64,6 +65,18 @@ namespace OdysseyServer.Services.Helpers
                 resultList.Add(convertedGroupDbo);
             }
             return resultList;
+        }
+
+        public static List<AbilityDbo> GetMaxLevelAbilities(List<AbilityDbo> abilities)
+        {
+            var groupedAbility = abilities.GroupBy(x => x.AbilityType);
+            var currentAbility = new List<AbilityDbo>();
+            foreach (var elem in groupedAbility)
+            {
+                var maxLevelAbility = elem.OrderByDescending(x => x.Level).First();
+                currentAbility.Add(maxLevelAbility);
+            }
+            return currentAbility;
         }
     }
 }
