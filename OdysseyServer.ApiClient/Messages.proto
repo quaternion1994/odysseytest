@@ -94,11 +94,6 @@ message CharacterAddAbilitiesResponse
     Character character = 1;
 }
 
-message CharacterDeleteRequest
-{
-    int64 characterId = 1;
-}
-
 message CharacterUpdateRequest
 {
     Character character = 1;
@@ -157,11 +152,6 @@ message AbilityUpdateRequest
 message AbilityUpdateResponse
 {
     Ability ability = 1;
-}
-
-message AbilityDeleteRequest
-{
-    int64 abilityId = 1;
 }
 
 message CharacterAbilityBoostRequest

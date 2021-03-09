@@ -1,8 +1,131 @@
 ﻿@page "/abilities"
 @inject HttpClient Http
 
-<h1>Weather forecast</h1>
+<h1>Abilities</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+@if (mode == 0)
+{
+    <button class="btn btn-primary" @onclick="AddAbility">Add ability</button>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Level</td>
+                <td>XP</td>
+                <td>Required level</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in abilities)
+            {
+                <tr>
+                    <td>@row.Name</td>
+                    <td>@row.Level</td>
+                    <td>@row.RequiredLevel</td>
+                    <td>@row.AbilityType</td>
+                    <td>
+                        <button class="btn btn-outline-info" @onclick="() => EditAbility(row)">Edit</button>
+                        <button class="btn btn-warning" @onclick="() => RemoveAbility(row)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (mode == 1 || mode == 3)
+{
+    <EditForm Model="@current" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
+        <p class="form-group">
+            <label>
+                Character name:
+                <InputText class="form-control" @bind-Value="current.Name" />
+            </label>
+        </p>
+        <p class="form-group">
+            <label>
+                Power:
+                <InputNumber min="0" class="form-control" @bind-Value="current.AbilityType" />
+            </label>
+        </p>
+        <p class="form-group">
+            <label>
+                XP:
+                <InputNumber min="0" class="form-control" @bind-Value="current.Level" />
+            </label>
+        </p>
+        <p class="form-group">
+            <label>
+                Level:
+                <InputNumber min="0" class="form-control" @bind-Value="current.RequiredLevel" />
+            </label>
+        </p>
+        <button class="btn btn-primary" type="submit">Save</button>
 
+    </EditForm>
+}
+else if (mode == 2)
+{
+    <h3>Working with server...</h3>
+}
+
+@code {
+    private List<Ability> abilities;
+    private Ability current;
+    private byte mode = 0;
+
+    private async void HandleValidSubmit()
+    {
+        if (mode == 1)
+        {
+            mode = 2;
+            await Http.PostProtobufAsync("ability", new AbilityAddRequest { Ability = current });
+        }
+        else if (mode == 3)
+        {
+            mode = 2;
+            await Http.PutProtobufAsync("ability", new AbilityUpdateRequest { Ability = current });
+        }
+        await ReloadTable();
+        mode = 0;
+        StateHasChanged();
+    }
+
+    private void AddAbility()
+    {
+        current = new Ability() { Name = "new" };
+        mode = 1;
+    }
+
+    private async void RemoveAbility(Ability row)
+    {
+        mode = 2;
+        await Http.DeleteProtobufAsync($"ability/{row.Id}");
+        await ReloadTable();
+        mode = 0;
+        StateHasChanged();
+    }
+
+    private void EditAbility(Ability row)
+    {
+        current = row;
+        mode = 3;
+    }
+
+    private async Task ReloadTable()
+    {
+        var response = await Http.GetFromProtobufAsync<AbilityAllResponse>(AbilityAllResponse.Parser, "abilities");
+        abilities = response.Ability.Abilities.ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        abilities = new List<Ability>();
+        mode = 2;
+        await ReloadTable();
+        mode = 0;
+    }
+}

@@ -11,7 +11,7 @@ namespace OdysseyServer.Services.Contracts
         Task<AbilityAddResponse> CreateAbility(AbilityAddRequest requestObject);
         Task<AbilityAllResponse> GetAllAbilities();
         Task<AbilityUpdateResponse> UpdateAbility(AbilityUpdateRequest requestObject);
-        Task DeleteAbility(AbilityDeleteRequest requestObject);
+        Task DeleteAbility(long abilityId);
         Task<AbilityGetResponse> GetAbilityById(AbilityGetRequest requestObject);
     }
 }

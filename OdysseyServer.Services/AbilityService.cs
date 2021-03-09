@@ -75,9 +75,9 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task DeleteAbility(AbilityDeleteRequest requestObject)
+        public async Task DeleteAbility(long abilityId)
         {
-            await _unitOfWork.Ability.Delete(requestObject.AbilityId);
+            await _unitOfWork.Ability.Delete(abilityId);
         }
     }
 }

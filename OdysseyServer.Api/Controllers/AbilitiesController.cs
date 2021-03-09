@@ -65,12 +65,10 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // DELETE api/ability
-        [HttpPost("delete")]
-        public async Task<IActionResult> AbilityDelete()
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> AbilityDelete(long id)
         {           
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = AbilityDeleteRequest.Parser.ParseFrom(stream);
-            await _abilityService.DeleteAbility(requestObject);
+            await _abilityService.DeleteAbility(id);
             return Ok();
         }
     }
