@@ -3,6 +3,7 @@ using OdysseyServer.ApiClient;
 using OdysseyServer.Persistence.Contracts;
 using OdysseyServer.Persistence.Entities;
 using OdysseyServer.Services.Contracts;
+using OdysseyServer.Services.Converters;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,28 +22,47 @@ namespace OdysseyServer.Services
             _mapper = mapper;
         }
 
-        public async Task<Group> GetGroupById(long id)
+        public async Task<GroupByIdResponse> GetGroupById(GroupByIdRequest requestObject)
         {
-            var groupDbo = await _unitOfWork.Group.GetByID(id);
-            var group = _mapper.Map<Group>(groupDbo);
-            return group;
+            var groupDbo = await _unitOfWork.Group.GetByID(requestObject.GroupId);
+            var group = new Group();
+            group = Converter.GroupDboToGroup(group, groupDbo);            
+            var result = new GroupByIdResponse
+            {
+                Group = group
+            };
+            return result;
         }
 
-        public async Task CreateGroup(Group group)
+        public async Task<GroupAddResponse> CreateGroup(GroupAddRequest requestObject)
         {
-            var groupDbo = _mapper.Map<GroupDbo>(group);
+            var groupDbo = _mapper.Map<GroupDbo>(requestObject.Group);
             await _unitOfWork.Group.Insert(groupDbo);
+            var group = new Group();
+            group = Converter.GroupDboToGroup(group, groupDbo);
+            var result = new GroupAddResponse
+            {
+                Group = group
+            };
+            return result;
         }
 
-        public async Task<AllGroup> GetAllGroups()
+        public async Task<GroupAllResponse> GetAllGroups()
         {
             var groupsDbo = await _unitOfWork.Group.Get();
-            var allGroup = new AllGroupDbo
+            var listOfGroup = new List<Group>();
+            foreach (var elem in groupsDbo)
             {
-                Groups = groupsDbo
+                var group = new Group();
+                group = Converter.GroupDboToGroup(group, elem);
+                listOfGroup.Add(group);
+            }
+            var result = new GroupAllResponse
+            {
+                Groups = new AllGroup()
             };
-            var groups = _mapper.Map<AllGroup>(allGroup);
-            return groups;
+            result.Groups.Group.AddRange(listOfGroup);
+            return result;
         }
 
         public async Task<Group> UpdateGroup(Group group)
@@ -54,9 +74,9 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task DeleteGroup(long id)
+        public async Task DeleteGroup(GroupDeleteRequest requestObject)
         {
-            await _unitOfWork.Group.Delete(id);
+            await _unitOfWork.Group.Delete(requestObject.GroupId);
         }
     }
 }

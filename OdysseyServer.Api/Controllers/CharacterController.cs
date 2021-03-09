@@ -62,7 +62,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // DELETE api/character
-        [HttpDelete("")]
+        [HttpPost("delete")]
         public async Task<IActionResult> CharacterDelete()
         {
             var stream = Request.BodyReader.AsStream();
