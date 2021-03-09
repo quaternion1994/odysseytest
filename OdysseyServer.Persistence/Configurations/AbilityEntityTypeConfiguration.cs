@@ -16,6 +16,7 @@ namespace OdysseyServer.Persistence.Configurations
             builder.Property(x => x.RequiredLevel).HasColumnName("RequiredLevel");
             builder.Property(e => e.Level).HasColumnName("Level");
             builder.Property(a => a.RowVersion).IsRowVersion();
+            builder.Property(x => x.AbilityType).HasColumnName("AbilityType");
         }
     }
 }

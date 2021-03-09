@@ -14,8 +14,12 @@ message Character
         repeated Ability ability = 7;
         repeated Group group = 8;
         bytes rowVersion = 9;
+        int32 xpToNextLevel = 10;
+        int32 offence = 11;
+        int32 defence = 12;
+        int32 health = 13;
     }
-
+       
 message Ability
     {
         int64 id = 1;
@@ -24,6 +28,7 @@ message Ability
         int32 requiredLevel = 4;
         AbilityStats stats = 5;
         bytes rowVersion = 6;
+        int32 abilityType = 7;
 }
 message AbilityStats
     {
@@ -162,6 +167,7 @@ message AbilityDeleteRequest
 message CharacterAbilityBoostRequest
 {
     int64 abilityId = 1;
+    int64 characterId = 2;
 }
 
 message CharacterAbilityBoostResponse
@@ -207,6 +213,8 @@ message GroupDeleteRequest
 {
      int64 groupId = 1;
 }
+
+
 
 
 

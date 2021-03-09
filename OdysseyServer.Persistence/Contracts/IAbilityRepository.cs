@@ -10,5 +10,6 @@ namespace OdysseyServer.Persistence.Contracts
     {
         Task<AbilityDbo> GetByID(long id);
         Task<List<AbilityDbo>> GetByArrayId(List<long> idsLIst);
+        Task<List<AbilityDbo>> GetInitialAbility();
     }
 }

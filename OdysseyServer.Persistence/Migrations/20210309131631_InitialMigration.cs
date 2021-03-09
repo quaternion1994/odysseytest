@@ -16,6 +16,7 @@ namespace OdysseyServer.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
                     RequiredLevel = table.Column<int>(type: "int", nullable: false),
+                    AbilityType = table.Column<int>(type: "int", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -32,6 +33,10 @@ namespace OdysseyServer.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Power = table.Column<int>(type: "int", nullable: false),
                     Xp = table.Column<int>(type: "int", nullable: false),
+                    XpToNextLevel = table.Column<int>(type: "int", nullable: false),
+                    Offence = table.Column<int>(type: "int", nullable: false),
+                    Defence = table.Column<int>(type: "int", nullable: false),
+                    Health = table.Column<int>(type: "int", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
                     GearTier = table.Column<int>(type: "int", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
@@ -54,6 +59,30 @@ namespace OdysseyServer.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Group", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LevelExperience",
+                columns: table => new
+                {
+                    Level = table.Column<int>(type: "int", nullable: false),
+                    ExperienceForUp = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LevelStats",
+                columns: table => new
+                {
+                    LevelNumber = table.Column<int>(type: "int", nullable: false),
+                    Offence = table.Column<int>(type: "int", nullable: false),
+                    Defence = table.Column<int>(type: "int", nullable: false),
+                    Health = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
                 });
 
             migrationBuilder.CreateTable(
@@ -153,6 +182,12 @@ namespace OdysseyServer.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "CharacterDboGroupDbo");
+
+            migrationBuilder.DropTable(
+                name: "LevelExperience");
+
+            migrationBuilder.DropTable(
+                name: "LevelStats");
 
             migrationBuilder.DropTable(
                 name: "Ability");

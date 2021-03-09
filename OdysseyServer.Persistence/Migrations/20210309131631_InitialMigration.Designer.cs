@@ -10,7 +10,7 @@ using OdysseyServer.Persistence;
 namespace OdysseyServer.Persistence.Migrations
 {
     [DbContext(typeof(OdysseyDbContext))]
-    [Migration("20210308195011_InitialMigration")]
+    [Migration("20210309131631_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,10 @@ namespace OdysseyServer.Persistence.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AbilityType")
+                        .HasColumnType("int")
+                        .HasColumnName("AbilityType");
 
                     b.Property<int>("Level")
                         .HasColumnType("int")
@@ -123,9 +127,17 @@ namespace OdysseyServer.Persistence.Migrations
                         .HasColumnName("Id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Defence")
+                        .HasColumnType("int")
+                        .HasColumnName("Defence");
+
                     b.Property<int>("GearTier")
                         .HasColumnType("int")
                         .HasColumnName("GearTier");
+
+                    b.Property<int>("Health")
+                        .HasColumnType("int")
+                        .HasColumnName("Health");
 
                     b.Property<int>("Level")
                         .HasColumnType("int")
@@ -136,6 +148,10 @@ namespace OdysseyServer.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("Name");
+
+                    b.Property<int>("Offence")
+                        .HasColumnType("int")
+                        .HasColumnName("Offence");
 
                     b.Property<int>("Power")
                         .HasColumnType("int")
@@ -149,6 +165,10 @@ namespace OdysseyServer.Persistence.Migrations
                     b.Property<int>("Xp")
                         .HasColumnType("int")
                         .HasColumnName("Xp");
+
+                    b.Property<int>("XpToNextLevel")
+                        .HasColumnType("int")
+                        .HasColumnName("XpToNextLevel");
 
                     b.HasKey("Id");
 
@@ -179,6 +199,40 @@ namespace OdysseyServer.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Group");
+                });
+
+            modelBuilder.Entity("OdysseyServer.Persistence.Entities.LevelExperienceDbo", b =>
+                {
+                    b.Property<int>("ExperienceForUp")
+                        .HasColumnType("int")
+                        .HasColumnName("ExperienceForUp");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int")
+                        .HasColumnName("Level");
+
+                    b.ToTable("LevelExperience");
+                });
+
+            modelBuilder.Entity("OdysseyServer.Persistence.Entities.LevelStatsDbo", b =>
+                {
+                    b.Property<int>("Defence")
+                        .HasColumnType("int")
+                        .HasColumnName("Defence");
+
+                    b.Property<int>("Health")
+                        .HasColumnType("int")
+                        .HasColumnName("Health");
+
+                    b.Property<int>("LevelNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("LevelNumber");
+
+                    b.Property<int>("Offence")
+                        .HasColumnType("int")
+                        .HasColumnName("Offence");
+
+                    b.ToTable("LevelStats");
                 });
 
             modelBuilder.Entity("AbilityDboCharacterDbo", b =>
