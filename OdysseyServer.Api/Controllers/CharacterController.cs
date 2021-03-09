@@ -40,7 +40,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // POST api/character
-        [HttpPost("")]
+        [HttpPost]
         public async Task<IActionResult> CharacterCreate()
         {
             var stream = Request.BodyReader.AsStream();
@@ -62,7 +62,7 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // DELETE api/character
-        [HttpPost("delete")]
+        [HttpDelete("")]
         public async Task<IActionResult> CharacterDelete()
         {
             var stream = Request.BodyReader.AsStream();

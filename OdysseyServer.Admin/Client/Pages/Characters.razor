@@ -87,7 +87,7 @@ else if (mode == 1)
     private async void HandleValidSubmit()
     {
         mode = 2;
-        await Http.PostProtobufAsync("character", current);
+        await Http.PostProtobufAsync("character", new CharacterCreateRequest { Character = current });
         await ReloadTable();
         mode = 0;
     }
