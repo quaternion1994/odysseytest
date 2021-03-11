@@ -21,9 +21,9 @@ namespace OdysseyServer.Services
             _mapper = mapper;
         }
 
-        public async Task<AbilityGetResponse> GetAbilityById(AbilityGetRequest requestObject)
+        public async Task<AbilityGetResponse> GetAbilityById(long abilityId)
         {
-            var abilityDbo = await _unitOfWork.Ability.GetByID(requestObject.AbilityId);
+            var abilityDbo = await _unitOfWork.Ability.GetByID(abilityId);
             var ability = _mapper.Map<Ability>(abilityDbo);            
             ability.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.RowVersion);
             ability.Stats.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.Stats.RowVersion);

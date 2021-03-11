@@ -10,7 +10,7 @@ namespace OdysseyServer.Services.Contracts
     public interface ICharacterService
     {
         Task<CharacterCreateResponse> CreateCharacter(CharacterCreateRequest requestObject);
-        Task<CharacterGetResponse> GetCharacterById(CharacterGetRequest requestObject);
+        Task<CharacterGetResponse> GetCharacterById(long characterId);
         Task<CharacterAllResponse> GetAllCharacters();
         Task<CharacterUpdateResponse> UpdateCharacter(CharacterUpdateRequest requestObject);
         Task DeleteCharacter(long characterId);

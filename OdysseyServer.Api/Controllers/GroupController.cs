@@ -45,12 +45,10 @@ namespace OdysseyServer.Api.Controllers
         }
 
 
-        [HttpPost("byid")]
-        public async Task<IActionResult> GetGroupById()
+        [HttpGet]
+        public async Task<IActionResult> GetGroupById(long id)
         {
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = GroupByIdRequest.Parser.ParseFrom(stream);
-            var ability = await _groupService.GetGroupById(requestObject);
+            var ability = await _groupService.GetGroupById(id);
             var data = ability.ToByteArray();
             return File(data, "application/octet-stream");
         }
@@ -66,12 +64,10 @@ namespace OdysseyServer.Api.Controllers
             return File(data, "application/octet-stream");
         }
 
-        [HttpPost("delete")]
-        public async Task<IActionResult> GroupDelete()
+        [HttpPost("{id}")]
+        public async Task<IActionResult> GroupDelete(long id)
         {
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = GroupDeleteRequest.Parser.ParseFrom(stream);
-            await _groupService.DeleteGroup(requestObject);
+            await _groupService.DeleteGroup(id);
             return Ok();
         }
     }

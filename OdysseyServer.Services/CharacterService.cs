@@ -23,9 +23,9 @@ namespace OdysseyServer.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<CharacterGetResponse> GetCharacterById(CharacterGetRequest requestObject)
+        public async Task<CharacterGetResponse> GetCharacterById(long characterId)
         {
-            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
+            var characterDbo = await _unitOfWork.Character.GetCharacterById(characterId);
             var currentAbility = Helper.GetMaxLevelAbilities(characterDbo.Abilities.ToList());
             var listOfAbilities = Helper.ConvertToAbility(currentAbility.ToList());
             var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());

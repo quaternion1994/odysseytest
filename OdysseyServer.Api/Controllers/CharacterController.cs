@@ -29,12 +29,10 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // GET api/character
-        [HttpPost("getbyid")]
-        public async Task<IActionResult> GetCharacterById()
-        {
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = CharacterGetRequest.Parser.ParseFrom(stream);           
-            var character = await _characterService.GetCharacterById(requestObject);
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCharacterById(long id)
+        {       
+            var character = await _characterService.GetCharacterById(id);
             var data = character.ToByteArray();
             return File(data, "application/octet-stream");
         }

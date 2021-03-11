@@ -31,12 +31,10 @@ namespace OdysseyServer.Api.Controllers
         }
 
         // GET api/ability
-        [HttpPost("byId")]
-        public async Task<IActionResult> GetAbilityById()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAbilityById(long id)
         {
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = AbilityGetRequest.Parser.ParseFrom(stream);
-            var ability = await _abilityService.GetAbilityById(requestObject);
+            var ability = await _abilityService.GetAbilityById(id);
             var data = ability.ToByteArray();
             return File(data, "application/octet-stream");
         }

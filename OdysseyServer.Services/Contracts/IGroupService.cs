@@ -9,8 +9,8 @@ namespace OdysseyServer.Services.Contracts
     public interface IGroupService
     {
         Task<GroupAddResponse> CreateGroup(GroupAddRequest requestObject);
-        Task<GroupByIdResponse> GetGroupById(GroupByIdRequest requestObject);
-        Task DeleteGroup(GroupDeleteRequest requestObject);
+        Task<GroupByIdResponse> GetGroupById(long groupId);
+        Task DeleteGroup(long groupId);
         Task<GroupAllResponse> GetAllGroups();
     }
 }
