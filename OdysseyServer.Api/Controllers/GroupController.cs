@@ -44,7 +44,6 @@ namespace OdysseyServer.Api.Controllers
             }         
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetGroupById(long id)
         {

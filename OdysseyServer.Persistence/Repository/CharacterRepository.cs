@@ -30,6 +30,7 @@ namespace OdysseyServer.Persistence.Repository
             entityToModified.Health = statsForLevel.Health;
             entityToModified.Offence = statsForLevel.Offence;
             entityToModified.Defence = statsForLevel.Defence;
+            entityToModified.Power = (statsForLevel.Offence + statsForLevel.Defence + statsForLevel.Health / 10) / 3;
             entityToModified.Xp = newCurrentExperience;
             entityToModified.XpToNextLevel = entityToModified.Xp + newMaxExpirience.ExperienceForUp;
             await base.Update(entityToModified);
@@ -38,7 +39,7 @@ namespace OdysseyServer.Persistence.Repository
         public async Task CharacterAbilityBoost(long characterId, long abilityId)
         {
             var entityToModified = await this.GetCharacterById(characterId);
-            var currentAbility = entityToModified.Abilities.Where(x => x.Id == abilityId).FirstOrDefault();
+            var currentAbility = entityToModified.Abilities.FirstOrDefault(x => x.Id == abilityId);
             var abilityEntity = await _context.Abilities.FirstOrDefaultAsync(x => x.AbilityType == currentAbility.AbilityType & x.Level == currentAbility.Level + 1);
             entityToModified.Abilities.Add(abilityEntity);           
             await base.Update(entityToModified);
@@ -46,7 +47,7 @@ namespace OdysseyServer.Persistence.Repository
 
         public async Task<CharacterDbo> GetCharacterById(long id)
         {
-            return await dbSet.Include(x => x.Abilities).ThenInclude(x => x.Stats).Include(x => x.Groups).Where(x => x.Id == id).FirstOrDefaultAsync();
+            return await dbSet.Include(x => x.Abilities).ThenInclude(x => x.Stats).Include(x => x.Groups).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<CharacterDbo>> GetAllCharacters()

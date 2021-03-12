@@ -112,7 +112,7 @@ namespace OdysseyServer.Services
             {
                 await _unitOfWork.Character.UnlockInitialAbility(characterDbo.Id, characterDbo.Level);
             }
-            var listOfAbilities = Helper.ConvertToAbility(currentAbility.ToList());
+            var listOfAbilities = Helper.ConvertToAbility(currentAbility);
             var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
             var character = new Character();
             character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);

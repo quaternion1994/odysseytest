@@ -49,7 +49,7 @@ namespace OdysseyServer.Services.Converters
             characterDbo.GearTier = character.GearTier;
             characterDbo.Level = character.Level;
             characterDbo.Name = character.Name;
-            characterDbo.Power = character.Power;
+            characterDbo.Power = (character.Offence + character.Defence + character.Health / 10) / 3;
             characterDbo.Xp = character.Xp;
             characterDbo.GearTier = character.GearTier;
             characterDbo.Abilities = abilities;
@@ -116,7 +116,7 @@ namespace OdysseyServer.Services.Converters
             character.GearTier = characterDbo.GearTier;
             character.Level = characterDbo.Level;
             character.Name = characterDbo.Name;
-            character.Power = characterDbo.Power;
+            character.Power = (characterDbo.Offence + characterDbo.Defence + characterDbo.Health/10) / 3;
             character.Xp = characterDbo.Xp;
             character.GearTier = characterDbo.GearTier;
             character.Ability.AddRange(abilities);
