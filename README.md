@@ -12,6 +12,8 @@ By default we see settings for test azure services
 ```
 
 API documentating will be avalable by https://localhost:44385/swagger/index.html or https://odysseyserverapitest.azurewebsites.net/swagger/index.html addresses
+All data models are avalable in Protobuf format in common "OdysseyServer.ApiClient" project => "Messages.proto" file. 
+This is common and indepenedent project that can be connected by any clients. It also contains HttpClient extensions to use Protobuf with REST.
 
 # Setup admin
 After previus setting up we need to connect admin to our API server. To do that go to OdysseyServer.Admin.Client project and select Program.cs. Change server address in this string
@@ -19,3 +21,5 @@ After previus setting up we need to connect admin to our API server. To do that 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://odysseyserverapitest.azurewebsites.net/api/") });
 
 ```
+
+Test project is on https://odysseyserveradminclient20210323164951.azurewebsites.net/
