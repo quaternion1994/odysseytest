@@ -12,6 +12,9 @@ using OdysseyServer.Persistence.Repository;
 using OdysseyServer.Api.Middleware;
 using AutoMapper;
 using OdysseyServer.Services.Mappers;
+using System.Reflection;
+using System.IO;
+using System;
 
 namespace OdysseyServer.Api
 {
@@ -47,7 +50,12 @@ namespace OdysseyServer.Api
             services.AddScoped<ICharacterService, CharacterService>();
             services.AddScoped<IAbilityService, AbilityService>();
             services.AddScoped<IGroupService, GroupService>();
-
+            services.AddSwaggerGen(c =>
+            {
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
