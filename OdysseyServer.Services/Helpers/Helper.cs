@@ -43,7 +43,7 @@ namespace OdysseyServer.Services.Helpers
             return resultList;
         }
 
-        public static List<Group> ConvertToGroup(List<GroupDbo> groupDbosList)
+        public static List<Group> ConvertToGroup(IEnumerable<GroupDbo> groupDbosList)
         {
             var resultList = new List<Group>();
             foreach (var elem in groupDbosList)
@@ -67,7 +67,7 @@ namespace OdysseyServer.Services.Helpers
             return resultList;
         }
 
-        public static List<AbilityDbo> GetMaxLevelAbilities(List<AbilityDbo> abilities)
+        public static List<AbilityDbo> GetMaxLevelAbilities(IEnumerable<AbilityDbo> abilities)
         {
             var groupedAbility = abilities.GroupBy(x => x.AbilityType);
             var currentAbility = new List<AbilityDbo>();

@@ -107,15 +107,16 @@ namespace OdysseyServer.Services
         {
             await _unitOfWork.Character.CharacterLevelBoost(requestObject.CharacterId, requestObject.LevelNumber);
             var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
-            var currentAbility = Helper.GetMaxLevelAbilities(characterDbo.Abilities.ToList());
-            if (currentAbility.Count < 4)
+            var currentAbilities = Helper.GetMaxLevelAbilities(characterDbo.Abilities.ToList());
+            if (currentAbilities.Count < 4)
             {
                 await _unitOfWork.Character.UnlockInitialAbility(characterDbo.Id, characterDbo.Level);
             }
-            var listOfAbilities = Helper.ConvertToAbility(currentAbility);
+            var newAbilities = Helper.ConvertToAbility(Helper.GetMaxLevelAbilities((await _unitOfWork.Character
+                .GetCharacterById(requestObject.CharacterId)).Abilities.ToList()));
             var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
             var character = new Character();
-            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
+            character = Converter.CharacterDboToCharacter(character, characterDbo, newAbilities, listOfGroups);
             var result = new CharacterLevelBoostResponse
             {
                 Character = character
