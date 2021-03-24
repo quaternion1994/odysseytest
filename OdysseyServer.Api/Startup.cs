@@ -15,6 +15,7 @@ using OdysseyServer.Services.Mappers;
 using System.Reflection;
 using System.IO;
 using System;
+using StackExchange.Redis;
 
 namespace OdysseyServer.Api
 {
@@ -39,10 +40,29 @@ namespace OdysseyServer.Api
                 mc.AddProfile(new MappingProfile());
             });
 
-            services.AddStackExchangeRedisCache(options =>
+            string redisConfiguration = Configuration["CacheConfiguration:Host"];
+            string sqlcacheConfiguration = Configuration["DbConfiguration:CacheConnectionString"];
+
+            if (!string.IsNullOrEmpty(redisConfiguration))
             {
-                options.Configuration = Configuration["CacheConfiguration:Host"];
-            });
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = redisConfiguration;
+                });
+            }
+            else if (!string.IsNullOrEmpty(sqlcacheConfiguration))
+            {
+                services.AddDistributedSqlServerCache(options =>
+                {
+                    options.ConnectionString = sqlcacheConfiguration;
+                    options.SchemaName = "dbo";
+                    options.TableName = "odysseydb";
+                });
+            }
+            else
+            {
+                throw new NotSupportedException("Neither SQL nor Redis cache is configured.");
+            }
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
