@@ -16,7 +16,7 @@ namespace OdysseyServer.Api.Controllers
 {
     [Route("api/ability")]
     [ApiController]
-    public class AbilitiesController : ControllerBase
+    public class AbilitiesController : OdysseyControllerBase
     {
         private IAbilityService _abilityService;
 
@@ -30,11 +30,9 @@ namespace OdysseyServer.Api.Controllers
         [Produces("application/x-protobuf")]
         [ProducesResponseType(typeof(AbilityAllResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllAbilities()
+        public async Task<IActionResult> GetAllAbilitiesAsync()
         {
-            var abilities = await _abilityService.GetAllAbilities();
-            var data = abilities.ToByteArray();
-            return File(data, "application/octet-stream");
+            return Protobuf(await _abilityService.GetAllAbilitiesAsync());
         }
 
         // GET api/ability
@@ -42,11 +40,9 @@ namespace OdysseyServer.Api.Controllers
         [Produces("application/x-protobuf")]
         [ProducesResponseType(typeof(AbilityGetResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAbilityById(long id)
+        public async Task<IActionResult> GetAbilityByIdAsync(long id)
         {
-            var ability = await _abilityService.GetAbilityById(id);
-            var data = ability.ToByteArray();
-            return File(data, "application/octet-stream");
+            return Protobuf(await _abilityService.GetAbilityByIdAsync(id));
         }
 
         // POST api/ability
@@ -57,13 +53,9 @@ namespace OdysseyServer.Api.Controllers
         [Produces("application/x-protobuf")]
         [ProducesResponseType(typeof(AbilityAddResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddAbility()
-        {           
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = AbilityAddRequest.Parser.ParseFrom(stream);
-            var result = await _abilityService.CreateAbility(requestObject);
-            var data = result.ToByteArray();
-            return File(data, "application/octet-stream");
+        public async Task<IActionResult> AddAbilityAsync(AbilityAddRequest requestObject)
+        {
+            return Protobuf(await _abilityService.CreateAbilityAsync(requestObject));
         }
 
         // PUT api/ability
@@ -74,24 +66,18 @@ namespace OdysseyServer.Api.Controllers
         [Produces("application/x-protobuf")]
         [ProducesResponseType(typeof(AbilityAddResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AbilityUpdate()
-        {           
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = AbilityUpdateRequest.Parser.ParseFrom(stream);
-            
-            var result = await _abilityService.UpdateAbility(requestObject);
-            var data = result.ToByteArray();
-            return File(data, "application/octet-stream");
+        public async Task<IActionResult> AbilityUpdateAsync(AbilityUpdateRequest requestObject)
+        {
+            return Protobuf(await _abilityService.UpdateAbility(requestObject));
         }
 
         // DELETE api/ability
         [HttpDelete("{id}")]
-        [Produces("application/x-protobuf")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AbilityDelete(long id)
+        public async Task<IActionResult> AbilityDeleteAsync(long id)
         {           
-            await _abilityService.DeleteAbility(id);
+            await _abilityService.DeleteAbilityAsync(id);
             return Ok();
         }
     }

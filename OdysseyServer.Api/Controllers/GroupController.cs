@@ -14,7 +14,7 @@ namespace OdysseyServer.Api.Controllers
 {
     [Route("api/group")]
     [ApiController]
-    public class GroupController : ControllerBase
+    public class GroupController : OdysseyControllerBase
     {
         private readonly IGroupService _groupService;
         private readonly IDistributedCache _distributedCache;
@@ -30,8 +30,8 @@ namespace OdysseyServer.Api.Controllers
         [Produces("application/x-protobuf")]
         [ProducesResponseType(typeof(GroupAllResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllGroups()
-        {            
+        public async Task<IActionResult> GetAllGroupsAsync()
+        {
             var cachedGroups = await _distributedCache.GetAsync(cacheKey);
             if (cachedGroups != null)
             {
@@ -39,7 +39,7 @@ namespace OdysseyServer.Api.Controllers
             }
             else
             {
-                var groups = await _groupService.GetAllGroups();
+                var groups = await _groupService.GetAllGroupsAsync();
                 var data = groups.ToByteArray();
                 var cacheExpirationOptions = new DistributedCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromMinutes(5))
@@ -53,11 +53,9 @@ namespace OdysseyServer.Api.Controllers
         [Produces("application/x-protobuf")]
         [ProducesResponseType(typeof(GroupByIdResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetGroupById(long id)
+        public async Task<IActionResult> GetGroupByIdAsync(long id)
         {
-            var ability = await _groupService.GetGroupById(id);
-            var data = ability.ToByteArray();
-            return File(data, "application/octet-stream");
+            return Protobuf(await _groupService.GetGroupByIdAsync(id));
         }
 
         /// <summary>
@@ -67,21 +65,17 @@ namespace OdysseyServer.Api.Controllers
         [Produces("application/x-protobuf")]
         [ProducesResponseType(typeof(GroupAddResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateGroup()
+        public async Task<IActionResult> CreateGroupAsync(GroupAddRequest requestObject)
         {
-            var stream = Request.BodyReader.AsStream();
-            var requestObject = GroupAddRequest.Parser.ParseFrom(stream);
-            var result = await _groupService.CreateGroup(requestObject);
-            var data = result.ToByteArray();
-            return File(data, "application/octet-stream");
+            return Protobuf(await _groupService.CreateGroupAsync(requestObject));
         }
 
         [HttpPost("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GroupDelete(long id)
+        public async Task<IActionResult> GroupDeleteAsync(long id)
         {
-            await _groupService.DeleteGroup(id);
+            await _groupService.DeleteGroupAsync(id);
             return Ok();
         }
     }

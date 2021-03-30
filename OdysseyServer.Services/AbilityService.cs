@@ -21,12 +21,11 @@ namespace OdysseyServer.Services
             _mapper = mapper;
         }
 
-        public async Task<AbilityGetResponse> GetAbilityById(long abilityId)
+        public async Task<AbilityGetResponse> GetAbilityByIdAsync(long abilityId)
         {
             var abilityDbo = await _unitOfWork.Ability.GetByID(abilityId);
             var ability = _mapper.Map<Ability>(abilityDbo);            
-            ability.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.RowVersion);
-            ability.Stats.RowVersion = Helper.ConvertByteArryyToByteString(abilityDbo.Stats.RowVersion);
+            ability.Stats.RowVersion = ByteString.CopyFrom(abilityDbo.Stats.RowVersion);
             var result = new AbilityGetResponse
             {
                 Ability = ability
@@ -34,7 +33,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task<AbilityAddResponse> CreateAbility(AbilityAddRequest requestObject)
+        public async Task<AbilityAddResponse> CreateAbilityAsync(AbilityAddRequest requestObject)
         {
             var abilityDbo = _mapper.Map<AbilityDbo>(requestObject.Ability);
             await _unitOfWork.Ability.Insert(abilityDbo);
@@ -46,18 +45,14 @@ namespace OdysseyServer.Services
             return result;
         }
           
-        public async Task<AbilityAllResponse> GetAllAbilities()
+        public async Task<AbilityAllResponse> GetAllAbilitiesAsync()
         {
-            var abilitiesDbo = await _unitOfWork.Ability.Get(includeProperties: "Stats");
-
-            var allAbilityDbo = new AllAbilityDbo
-            {
-                Abilities = abilitiesDbo
-            };
-            var ability = _mapper.Map<AllAbility>(allAbilityDbo);
             var result = new AbilityAllResponse
             {
-                Ability = ability
+                Ability = _mapper.Map<AllAbility>(new AllAbilityDbo
+                {
+                    Abilities = await _unitOfWork.Ability.Get(includeProperties: "Stats")
+                })
             };
             return result;
         }
@@ -75,7 +70,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task DeleteAbility(long abilityId)
+        public async Task DeleteAbilityAsync(long abilityId)
         {
             await _unitOfWork.Ability.Delete(abilityId);
         }

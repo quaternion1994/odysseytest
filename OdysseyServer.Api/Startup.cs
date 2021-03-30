@@ -16,6 +16,7 @@ using System.Reflection;
 using System.IO;
 using System;
 using StackExchange.Redis;
+using OdysseyServer.Api.Binders;
 
 namespace OdysseyServer.Api
 {
@@ -31,7 +32,9 @@ namespace OdysseyServer.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(configure => {
+                configure.ModelBinderProviders.Insert(0, new ProtobufMessageBinderProvider());
+            });
             services.AddSwaggerGen();
             services.AddDbContext<OdysseyDbContext>(options =>
                 options.UseSqlServer(Configuration["DbConfiguration:ConnectionStrings"]));

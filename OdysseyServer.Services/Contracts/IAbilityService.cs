@@ -8,10 +8,10 @@ namespace OdysseyServer.Services.Contracts
 {
     public interface IAbilityService
     {
-        Task<AbilityAddResponse> CreateAbility(AbilityAddRequest requestObject);
-        Task<AbilityAllResponse> GetAllAbilities();
+        Task<AbilityAddResponse> CreateAbilityAsync(AbilityAddRequest requestObject);
+        Task<AbilityAllResponse> GetAllAbilitiesAsync();
         Task<AbilityUpdateResponse> UpdateAbility(AbilityUpdateRequest requestObject);
-        Task DeleteAbility(long abilityId);
-        Task<AbilityGetResponse> GetAbilityById(long abilityId);
+        Task DeleteAbilityAsync(long abilityId);
+        Task<AbilityGetResponse> GetAbilityByIdAsync(long abilityId);
     }
 }

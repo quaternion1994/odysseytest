@@ -12,14 +12,7 @@ namespace OdysseyServer.Services.Helpers
 {
     public static class Helper
     {
-        public static ByteString ConvertByteArryyToByteString(byte[] array)
-        {
-            Stream stream = new MemoryStream(array);
-            var byteString = ByteString.FromStream(stream);
-            return byteString;
-        }
-
-        public static List<Ability> ConvertToAbility(List<AbilityDbo> abilityDbosList)
+        public static List<Ability> ConvertToAbility(this IEnumerable<AbilityDbo> abilityDbosList)
         {
             var resultList = new List<Ability>();
             foreach (var elem in abilityDbosList)
@@ -31,7 +24,7 @@ namespace OdysseyServer.Services.Helpers
             return resultList;
         }
 
-        public static List<AbilityDbo> ConvertToAbilityDbo(List<Ability> abilityList)
+        public static List<AbilityDbo> ConvertToAbilityDbo(IEnumerable<Ability> abilityList)
         {
             var resultList = new List<AbilityDbo>();
             foreach (var elem in abilityList)
@@ -55,7 +48,7 @@ namespace OdysseyServer.Services.Helpers
             return resultList;
         }
 
-        public static List<GroupDbo> ConvertToGroupDbo(List<Group> groupList)
+        public static List<GroupDbo> ConvertToGroupDbo(IEnumerable<Group> groupList)
         {
             var resultList = new List<GroupDbo>();
             foreach (var elem in groupList)

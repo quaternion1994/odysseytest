@@ -23,7 +23,7 @@ namespace OdysseyServer.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<CharacterGetResponse> GetCharacterById(long characterId)
+        public async Task<CharacterGetResponse> GetCharacterByIdAsync(long characterId)
         {
             var characterDbo = await _unitOfWork.Character.GetCharacterById(characterId);
             var currentAbility = Helper.GetMaxLevelAbilities(characterDbo.Abilities.ToList());
@@ -38,7 +38,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task<CharacterCreateResponse> CreateCharacter(CharacterCreateRequest requestObject)
+        public async Task<CharacterCreateResponse> CreateCharacterAsync(CharacterCreateRequest requestObject)
         {
             var characterDbo = new CharacterDbo();
             var initialAbility = await _unitOfWork.Ability.GetInitialAbility();
@@ -57,7 +57,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task<CharacterAllResponse> GetAllCharacters()
+        public async Task<CharacterAllResponse> GetAllCharactersAsync()
         {
             var characterDbo = await _unitOfWork.Character.GetAllCharacters();
             var listOfCharacters = new List<Character>();
@@ -81,7 +81,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task<CharacterUpdateResponse> UpdateCharacter(CharacterUpdateRequest requestObject)
+        public async Task<CharacterUpdateResponse> UpdateCharacterAsync(CharacterUpdateRequest requestObject)
         {
             var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.Character.Id);
             Converter.UpdateDboByCharacter(requestObject.Character, characterDbo);
@@ -98,12 +98,12 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task DeleteCharacter(long characterId)
+        public async Task DeleteCharacterAsync(long characterId)
         {
             await _unitOfWork.Character.Delete(characterId);
         }
 
-        public async Task<CharacterLevelBoostResponse> CharacterLevelBoost(CharacterLevelBoostRequest requestObject)
+        public async Task<CharacterLevelBoostResponse> CharacterLevelBoostAsync(CharacterLevelBoostRequest requestObject)
         {
             await _unitOfWork.Character.CharacterLevelBoost(requestObject.CharacterId, requestObject.LevelNumber);
             var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
@@ -124,7 +124,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task<CharacterAddGroupResponse> CharacterAddGroup(CharacterAddGroupRequest requestObject)
+        public async Task<CharacterAddGroupResponse> CharacterAddGroupAsync(CharacterAddGroupRequest requestObject)
         {
             var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
             var groupDbo = await _unitOfWork.Group.GetByArrayId(requestObject.GroupId.ToList());
@@ -141,7 +141,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task<CharacterAbilityBoostResponse> CharacterBoostAbilities(CharacterAbilityBoostRequest requestObject)
+        public async Task<CharacterAbilityBoostResponse> CharacterBoostAbilitiesAsync(CharacterAbilityBoostRequest requestObject)
         {
             await _unitOfWork.Character.CharacterAbilityBoost(requestObject.CharacterId, requestObject.AbilityId);
             var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);

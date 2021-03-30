@@ -22,7 +22,7 @@ namespace OdysseyServer.Services
             _mapper = mapper;
         }
 
-        public async Task<GroupByIdResponse> GetGroupById(long groupId)
+        public async Task<GroupByIdResponse> GetGroupByIdAsync(long groupId)
         {
             var groupDbo = await _unitOfWork.Group.GetByID(groupId);
             var group = new Group();
@@ -34,7 +34,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task<GroupAddResponse> CreateGroup(GroupAddRequest requestObject)
+        public async Task<GroupAddResponse> CreateGroupAsync(GroupAddRequest requestObject)
         {
             var groupDbo = _mapper.Map<GroupDbo>(requestObject.Group);
             await _unitOfWork.Group.Insert(groupDbo);
@@ -47,7 +47,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task<GroupAllResponse> GetAllGroups()
+        public async Task<GroupAllResponse> GetAllGroupsAsync()
         {
             var groupsDbo = await _unitOfWork.Group.Get();
             var listOfGroup = new List<Group>();
@@ -74,7 +74,7 @@ namespace OdysseyServer.Services
             return result;
         }
 
-        public async Task DeleteGroup(long groupId)
+        public async Task DeleteGroupAsync(long groupId)
         {
             await _unitOfWork.Group.Delete(groupId);
         }
