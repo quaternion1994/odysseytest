@@ -3,12 +3,8 @@ using OdysseyServer.ApiClient;
 using OdysseyServer.Persistence.Contracts;
 using OdysseyServer.Persistence.Entities;
 using OdysseyServer.Services.Contracts;
-using OdysseyServer.Services.Converters;
-using OdysseyServer.Services.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OdysseyServer.Services
@@ -23,78 +19,82 @@ namespace OdysseyServer.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+        private IEnumerable<AbilityDbo> GetMaxLevelAbilities(IEnumerable<AbilityDbo> abilities)
+        {
+            foreach (IGrouping<int, AbilityDbo> group in abilities.GroupBy(x => x.AbilityType))
+            {
+                AbilityDbo maxLevelAbilityOfType = group.FirstOrDefault();
+                foreach (AbilityDbo item in group)
+                {
+                    if (maxLevelAbilityOfType.Level < item.Level)
+                        maxLevelAbilityOfType = item;
+                }
+                if (maxLevelAbilityOfType == null)
+                    continue;
+
+                yield return maxLevelAbilityOfType;
+            }
+        }
+
         public async Task<CharacterGetResponse> GetCharacterByIdAsync(long characterId)
         {
-            var characterDbo = await _unitOfWork.Character.GetCharacterById(characterId);
-            var currentAbility = Helper.GetMaxLevelAbilities(characterDbo.Abilities.ToList());
-            var listOfAbilities = Helper.ConvertToAbility(currentAbility.ToList());
-            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
-            var character = new Character();
-            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
-            var result = new CharacterGetResponse
+            CharacterDbo characterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(characterId);
+            characterDbo.Abilities = GetMaxLevelAbilities(characterDbo.Abilities).ToArray();
+
+            CharacterGetResponse result = new CharacterGetResponse()
             {
-                Character = character
+                Character = _mapper.Map<Character>(characterDbo)
             };
             return result;
         }
 
         public async Task<CharacterCreateResponse> CreateCharacterAsync(CharacterCreateRequest requestObject)
         {
-            var characterDbo = new CharacterDbo();
-            var initialAbility = await _unitOfWork.Ability.GetInitialAbility();
-            var abilityDboList = Helper.ConvertToAbilityDbo(requestObject.Character.Ability.ToList());
-            var groupDboList = Helper.ConvertToGroupDbo(requestObject.Character.Group.ToList());            
-            Converter.CharacterToCharacterDbo(requestObject.Character, characterDbo, initialAbility, groupDboList);
+            CharacterDbo characterDbo = _mapper.Map<CharacterDbo>(requestObject.Character);
+            characterDbo.Abilities = await _unitOfWork.Ability.GetInitialAbilityAsync();
             await _unitOfWork.Character.Insert(characterDbo);
-            var character = new Character();
-            var listOfAbilities = Helper.ConvertToAbility(characterDbo.Abilities.ToList());
-            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
-            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
-            var result = new CharacterCreateResponse
+
+            CharacterCreateResponse result = new CharacterCreateResponse
             {
-                Character = character
+                Character = requestObject.Character
             };
+            result.Character.Id = characterDbo.Id;
+
             return result;
         }
 
         public async Task<CharacterAllResponse> GetAllCharactersAsync()
         {
-            var characterDbo = await _unitOfWork.Character.GetAllCharacters();
-            var listOfCharacters = new List<Character>();
-            foreach (var elem in characterDbo)
+            List<CharacterDbo> characterDbo = await _unitOfWork.Character.GetAllCharactersAsync();
+            foreach (CharacterDbo elem in characterDbo)
             {
-                var currentAbility = Helper.GetMaxLevelAbilities(elem.Abilities.ToList());
-                var listOfAbilities = Helper.ConvertToAbility(currentAbility.ToList());
-                var listOfGroups = Helper.ConvertToGroup(elem.Groups.ToList());               
-                var convertedCharacter = new Character();
-                convertedCharacter = Converter.CharacterDboToCharacter(convertedCharacter, elem, listOfAbilities, listOfGroups);
-                listOfCharacters.Add(convertedCharacter);
+                elem.Abilities = GetMaxLevelAbilities(elem.Abilities).ToArray();
             }
 
-            var allCharacters = new AllCharacter();
-            allCharacters.Characters.AddRange(listOfCharacters);
-            
-            var result = new CharacterAllResponse
+            CharacterAllResponse result = new CharacterAllResponse
             {
-                Character = allCharacters
+                Character = new AllCharacter()
             };
+
+            _mapper.Map(characterDbo, result.Character.Characters);
+
             return result;
         }
 
         public async Task<CharacterUpdateResponse> UpdateCharacterAsync(CharacterUpdateRequest requestObject)
         {
-            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.Character.Id);
-            Converter.UpdateDboByCharacter(requestObject.Character, characterDbo);
-            await _unitOfWork.Character.SaveChangesAsync();
-            var character = new Character();
-            var currentAbility = Helper.GetMaxLevelAbilities(characterDbo.Abilities.ToList());
-            var listOfAbilities = Helper.ConvertToAbility(currentAbility.ToList());
-            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
-            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
-            var result = new CharacterUpdateResponse
+            CharacterDbo characterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(requestObject.Character.Id);
+            
+            _mapper.Map(requestObject.Character, characterDbo);
+            await _unitOfWork.SaveChangesAsync();
+
+            CharacterUpdateResponse result = new CharacterUpdateResponse
             {
-                Character = character
+                Character = new Character()
             };
+            _mapper.Map(GetMaxLevelAbilities(characterDbo.Abilities), result.Character.Abilities);
+
             return result;
         }
 
@@ -105,56 +105,48 @@ namespace OdysseyServer.Services
 
         public async Task<CharacterLevelBoostResponse> CharacterLevelBoostAsync(CharacterLevelBoostRequest requestObject)
         {
-            await _unitOfWork.Character.CharacterLevelBoost(requestObject.CharacterId, requestObject.LevelNumber);
-            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
-            var currentAbilities = Helper.GetMaxLevelAbilities(characterDbo.Abilities.ToList());
-            if (currentAbilities.Count < 4)
+            await _unitOfWork.Character.CharacterLevelBoostAsync(requestObject.CharacterId, requestObject.LevelNumber);
+
+            CharacterDbo characterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(requestObject.CharacterId);
+            AbilityDbo[] currentAbilities = GetMaxLevelAbilities(characterDbo.Abilities).ToArray();
+            if (currentAbilities.Length < 4)
             {
-                await _unitOfWork.Character.UnlockInitialAbility(characterDbo.Id, characterDbo.Level);
+                await _unitOfWork.Character.UnlockInitialAbilityAsync(characterDbo.Id, characterDbo.Level);
             }
-            var newAbilities = Helper.ConvertToAbility(Helper.GetMaxLevelAbilities((await _unitOfWork.Character
-                .GetCharacterById(requestObject.CharacterId)).Abilities.ToList()));
-            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
-            var character = new Character();
-            character = Converter.CharacterDboToCharacter(character, characterDbo, newAbilities, listOfGroups);
-            var result = new CharacterLevelBoostResponse
+
+            CharacterDbo updatedCharacterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(requestObject.CharacterId);
+            updatedCharacterDbo.Abilities = GetMaxLevelAbilities(updatedCharacterDbo.Abilities).ToArray();
+            
+            return new CharacterLevelBoostResponse
             {
-                Character = character
+                Character = _mapper.Map<Character>(updatedCharacterDbo)
             };
-            return result;
         }
 
         public async Task<CharacterAddGroupResponse> CharacterAddGroupAsync(CharacterAddGroupRequest requestObject)
         {
-            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
-            var groupDbo = await _unitOfWork.Group.GetByArrayId(requestObject.GroupId.ToList());
-            groupDbo.ForEach(characterDbo.Groups.Add);
-            await _unitOfWork.Character.SaveChangesAsync();
-            var character = new Character();
-            var listOfAbilities = Helper.ConvertToAbility(characterDbo.Abilities.ToList());
-            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
-            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
-            var result = new CharacterAddGroupResponse
+            CharacterDbo characterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(requestObject.CharacterId);
+            List<GroupDbo> groupDbos = await _unitOfWork.Group.GetArrayByIdsAsync(requestObject.GroupIds);
+
+            groupDbos.ForEach(characterDbo.Groups.Add);
+            await _unitOfWork.SaveChangesAsync();
+
+            CharacterDbo updatedCharacterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(requestObject.CharacterId);
+            return new CharacterAddGroupResponse
             {
-                Character = character
+                Character = _mapper.Map<Character>(updatedCharacterDbo)
             };
-            return result;
         }
 
         public async Task<CharacterAbilityBoostResponse> CharacterBoostAbilitiesAsync(CharacterAbilityBoostRequest requestObject)
         {
-            await _unitOfWork.Character.CharacterAbilityBoost(requestObject.CharacterId, requestObject.AbilityId);
-            var characterDbo = await _unitOfWork.Character.GetCharacterById(requestObject.CharacterId);
-            var currentAbility = Helper.GetMaxLevelAbilities(characterDbo.Abilities.ToList());
-            var listOfAbilities = Helper.ConvertToAbility(currentAbility.ToList());
-            var listOfGroups = Helper.ConvertToGroup(characterDbo.Groups.ToList());
-            var character = new Character();
-            character = Converter.CharacterDboToCharacter(character, characterDbo, listOfAbilities, listOfGroups);
-            var result = new CharacterAbilityBoostResponse
+            await _unitOfWork.Character.CharacterAbilityBoostAsync(requestObject.CharacterId, requestObject.AbilityId);
+            
+            CharacterDbo updatedCharacterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(requestObject.CharacterId);
+            return new CharacterAbilityBoostResponse
             {
-                Character = character
+                Character = _mapper.Map<Character>(updatedCharacterDbo)
             };
-            return result;
         }
     }
 }

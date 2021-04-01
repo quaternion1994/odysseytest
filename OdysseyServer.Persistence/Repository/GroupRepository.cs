@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OdysseyServer.Persistence.Contracts;
 using OdysseyServer.Persistence.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OdysseyServer.Persistence.Repository
@@ -18,7 +16,7 @@ namespace OdysseyServer.Persistence.Repository
             _context = context;
         }
 
-        public async virtual Task<List<GroupDbo>> GetByArrayId(List<long> idsLIst)
+        public async virtual Task<List<GroupDbo>> GetArrayByIdsAsync(IEnumerable<long> idsLIst)
         {
             return await dbSet.Where(x => idsLIst.Contains(x.Id)).ToListAsync();
         }

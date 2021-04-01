@@ -36,8 +36,10 @@ namespace OdysseyServer.Api
                 configure.ModelBinderProviders.Insert(0, new ProtobufMessageBinderProvider());
             });
             services.AddSwaggerGen();
-            services.AddDbContext<OdysseyDbContext>(options =>
-                options.UseSqlServer(Configuration["DbConfiguration:ConnectionStrings"]));
+            services.AddDbContext<OdysseyDbContext>(options => {
+                options.UseSqlServer(Configuration["DbConfiguration:ConnectionStrings"]);
+                options.EnableSensitiveDataLogging();
+            });
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new MappingProfile());

@@ -1,8 +1,5 @@
 ﻿using OdysseyServer.Persistence.Contracts;
-using OdysseyServer.Persistence.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace OdysseyServer.Persistence.Repository
 {
@@ -17,10 +14,14 @@ namespace OdysseyServer.Persistence.Repository
             Character = new CharacterRepository(_context);
             Group = new GroupRepository(_context);
         }
+
+        public async virtual Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
         public IAbilityRepository Ability { get; private set; }
         public ICharacterRepository Character { get; private set; }
-
-
         public IGroupRepository Group { get; private set; }
         
     }

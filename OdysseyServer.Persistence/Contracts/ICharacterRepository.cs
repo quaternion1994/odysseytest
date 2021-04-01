@@ -8,10 +8,10 @@ namespace OdysseyServer.Persistence.Contracts
 {
     public interface ICharacterRepository : IRepository<CharacterDbo>
     {
-        Task CharacterLevelBoost(long id, int lvlNumber);
-        Task<CharacterDbo> GetCharacterById(long id);
-        Task<List<CharacterDbo>> GetAllCharacters();
-        Task CharacterAbilityBoost(long characterId, long abilityId);
-        Task UnlockInitialAbility(long characterId, int characterLevel);
+        Task CharacterLevelBoostAsync(long id, int lvlNumber);
+        Task<CharacterDbo> GetCharacterByIdAsync(long id);
+        Task<List<CharacterDbo>> GetAllCharactersAsync();
+        Task CharacterAbilityBoostAsync(long characterId, long abilityId);
+        Task UnlockInitialAbilityAsync(long characterId, int characterLevel);
     }
 }

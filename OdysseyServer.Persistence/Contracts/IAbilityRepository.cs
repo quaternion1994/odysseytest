@@ -8,8 +8,8 @@ namespace OdysseyServer.Persistence.Contracts
 {
     public interface IAbilityRepository : IRepository<AbilityDbo>
     {
-        Task<AbilityDbo> GetByID(long id);
-        Task<List<AbilityDbo>> GetByArrayId(List<long> idsLIst);
-        Task<List<AbilityDbo>> GetInitialAbility();
+        Task<AbilityDbo> GetByIdAsync(long id);
+        Task<List<AbilityDbo>> GetByArrayIdAsync(List<long> idsLIst);
+        Task<List<AbilityDbo>> GetInitialAbilityAsync();
     }
 }

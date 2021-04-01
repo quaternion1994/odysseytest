@@ -11,8 +11,8 @@ message Character
         int32 xp = 4;
         int32 level = 5;
         int32 gearTier = 6;
-        repeated Ability ability = 7;
-        repeated Group group = 8;
+        repeated Ability abilities = 7;
+        repeated Group groups = 8;
         bytes rowVersion = 9;
         int32 xpToNextLevel = 10;
         int32 offence = 11;
@@ -57,14 +57,14 @@ message Group
 }
 
 message AllGroup
-    {
-        repeated Group group = 1;
+{
+        repeated Group groups = 1;
 }
 
 message CharacterAddGroupRequest
 {
     int64 characterId = 1;
-    repeated int64 groupId = 2;
+    repeated int64 groupIds = 2;
 }
 
 message CharacterAddGroupResponse

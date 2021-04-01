@@ -18,7 +18,7 @@ namespace OdysseyServer.Persistence.Repository
             _context = context;
         }
 
-        public async Task CharacterLevelBoost(long id, int lvlNumber)
+        public async Task CharacterLevelBoostAsync(long id, int lvlNumber)
         {
             var entityToModified = await base.GetByID(id);
             var leverExperienceList = await _context.LevelExperience.Where(x => x.Level > entityToModified.Level & x.Level <= lvlNumber + entityToModified.Level).ToListAsync();
@@ -36,25 +36,25 @@ namespace OdysseyServer.Persistence.Repository
             await base.Update(entityToModified);
         }
 
-        public async Task CharacterAbilityBoost(long characterId, long abilityId)
+        public async Task CharacterAbilityBoostAsync(long characterId, long abilityId)
         {
-            var entityToModified = await this.GetCharacterById(characterId);
+            var entityToModified = await this.GetCharacterByIdAsync(characterId);
             var currentAbility = entityToModified.Abilities.FirstOrDefault(x => x.Id == abilityId);
             var abilityEntity = await _context.Abilities.FirstOrDefaultAsync(x => x.AbilityType == currentAbility.AbilityType & x.Level == currentAbility.Level + 1);
             entityToModified.Abilities.Add(abilityEntity);           
             await base.Update(entityToModified);
         }
 
-        public async Task<CharacterDbo> GetCharacterById(long id)
+        public async Task<CharacterDbo> GetCharacterByIdAsync(long id)
         {
             return await dbSet.Include(x => x.Abilities).ThenInclude(x => x.Stats).Include(x => x.Groups).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<CharacterDbo>> GetAllCharacters()
+        public async Task<List<CharacterDbo>> GetAllCharactersAsync()
         {
             return await dbSet.Include(x => x.Abilities).ThenInclude(x => x.Stats).Include(x => x.Groups).AsNoTracking().ToListAsync();
         }
-        public async Task UnlockInitialAbility(long characterId, int characterLevel)
+        public async Task UnlockInitialAbilityAsync(long characterId, int characterLevel)
         {
             var abilityForUnlock = new List<AbilityDbo>();
             var lockedAbility = await _context.Abilities.Where(x => x.RequiredLevel <= characterLevel && x.RequiredLevel > 1).ToListAsync();

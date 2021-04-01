@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using Google.Protobuf;
 using OdysseyServer.ApiClient;
 using OdysseyServer.Persistence.Contracts;
 using OdysseyServer.Persistence.Entities;
 using OdysseyServer.Services.Contracts;
 using System.Threading.Tasks;
-using OdysseyServer.Services.Helpers;
 using OdysseyServer.Services.Converters;
 
 namespace OdysseyServer.Services
@@ -23,51 +21,47 @@ namespace OdysseyServer.Services
 
         public async Task<AbilityGetResponse> GetAbilityByIdAsync(long abilityId)
         {
-            var abilityDbo = await _unitOfWork.Ability.GetByID(abilityId);
-            var ability = _mapper.Map<Ability>(abilityDbo);            
-            ability.Stats.RowVersion = ByteString.CopyFrom(abilityDbo.Stats.RowVersion);
-            var result = new AbilityGetResponse
+            AbilityDbo abilityDbo = await _unitOfWork.Ability.GetByIdAsync(abilityId);       
+            return new AbilityGetResponse
             {
-                Ability = ability
+                Ability = _mapper.Map<Ability>(abilityDbo)
             };
-            return result;
         }
 
         public async Task<AbilityAddResponse> CreateAbilityAsync(AbilityAddRequest requestObject)
         {
-            var abilityDbo = _mapper.Map<AbilityDbo>(requestObject.Ability);
+            AbilityDbo abilityDbo = _mapper.Map<AbilityDbo>(requestObject.Ability);
             await _unitOfWork.Ability.Insert(abilityDbo);
-            var ability = _mapper.Map<Ability>(abilityDbo);
-            var result = new AbilityAddResponse
+            AbilityAddResponse result = new AbilityAddResponse
             {
-                Ability = ability
+                Ability = requestObject.Ability
             };
+            result.Ability.Id = abilityDbo.Id;
             return result;
         }
           
         public async Task<AbilityAllResponse> GetAllAbilitiesAsync()
         {
-            var result = new AbilityAllResponse
+            AbilityAllResponse response = new AbilityAllResponse
             {
-                Ability = _mapper.Map<AllAbility>(new AllAbilityDbo
-                {
-                    Abilities = await _unitOfWork.Ability.Get(includeProperties: "Stats")
-                })
+                Ability = new AllAbility()
             };
-            return result;
+            _mapper.Map(await _unitOfWork.Ability.Get(includeProperties: "Stats"), response.Ability.Abilities);
+            
+            return response;
         }
 
         public async Task<AbilityUpdateResponse> UpdateAbility(AbilityUpdateRequest requestObject)
         {
-            var abilityFromDb = await _unitOfWork.Ability.GetByID(requestObject.Ability.Id);
-            Converter.UpdateDboByAbility(requestObject.Ability, abilityFromDb);
-            await _unitOfWork.Ability.SaveChangesAsync();
-            var ability = _mapper.Map<Ability>(abilityFromDb);
-            var result = new AbilityUpdateResponse
+            AbilityDbo abilityDbo = await _unitOfWork.Ability.GetByIdAsync(requestObject.Ability.Id);
+
+            _mapper.Map(requestObject.Ability, abilityDbo);
+
+            await _unitOfWork.SaveChangesAsync();
+            return new AbilityUpdateResponse
             {
-                Ability = ability
+                Ability = requestObject.Ability
             };
-            return result;
         }
 
         public async Task DeleteAbilityAsync(long abilityId)

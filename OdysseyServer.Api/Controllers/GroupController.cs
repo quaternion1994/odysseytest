@@ -5,8 +5,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using OdysseyServer.ApiClient;
 using OdysseyServer.Services.Contracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -39,11 +37,11 @@ namespace OdysseyServer.Api.Controllers
             }
             else
             {
-                var groups = await _groupService.GetAllGroupsAsync();
-                var data = groups.ToByteArray();
-                var cacheExpirationOptions = new DistributedCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromMinutes(5))
-                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+                GroupAllResponse groups = await _groupService.GetAllGroupsAsync();
+                byte[] data = groups.ToByteArray();
+                DistributedCacheEntryOptions cacheExpirationOptions = new DistributedCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(5))
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
                 await _distributedCache.SetAsync(cacheKey, data, cacheExpirationOptions);
                 return File(data, "application/octet-stream");
             }         

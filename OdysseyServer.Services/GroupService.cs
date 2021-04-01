@@ -3,10 +3,6 @@ using OdysseyServer.ApiClient;
 using OdysseyServer.Persistence.Contracts;
 using OdysseyServer.Persistence.Entities;
 using OdysseyServer.Services.Contracts;
-using OdysseyServer.Services.Converters;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OdysseyServer.Services
@@ -24,44 +20,33 @@ namespace OdysseyServer.Services
 
         public async Task<GroupByIdResponse> GetGroupByIdAsync(long groupId)
         {
-            var groupDbo = await _unitOfWork.Group.GetByID(groupId);
-            var group = new Group();
-            group = Converter.GroupDboToGroup(group, groupDbo);            
-            var result = new GroupByIdResponse
+            return new GroupByIdResponse
             {
-                Group = group
+                Group = _mapper.Map<Group>(await _unitOfWork.Group.GetByID(groupId))
             };
-            return result;
         }
 
         public async Task<GroupAddResponse> CreateGroupAsync(GroupAddRequest requestObject)
         {
-            var groupDbo = _mapper.Map<GroupDbo>(requestObject.Group);
+            GroupDbo groupDbo = _mapper.Map<GroupDbo>(requestObject.Group);
             await _unitOfWork.Group.Insert(groupDbo);
-            var group = new Group();
-            group = Converter.GroupDboToGroup(group, groupDbo);
-            var result = new GroupAddResponse
+
+            GroupAddResponse result = new GroupAddResponse
             {
-                Group = group
+                Group = requestObject.Group
             };
+            
+            requestObject.Group.Id = groupDbo.Id;
             return result;
         }
 
         public async Task<GroupAllResponse> GetAllGroupsAsync()
         {
-            var groupsDbo = await _unitOfWork.Group.Get();
-            var listOfGroup = new List<Group>();
-            foreach (var elem in groupsDbo)
-            {
-                var group = new Group();
-                group = Converter.GroupDboToGroup(group, elem);
-                listOfGroup.Add(group);
-            }
-            var result = new GroupAllResponse
+            GroupAllResponse result = new GroupAllResponse
             {
                 Groups = new AllGroup()
             };
-            result.Groups.Group.AddRange(listOfGroup);
+            _mapper.Map(await _unitOfWork.Group.Get(), result.Groups.Groups);
             return result;
         }
 
