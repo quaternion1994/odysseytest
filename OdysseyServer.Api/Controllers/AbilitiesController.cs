@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OdysseyServer.ApiClient;
 using OdysseyServer.Services.Contracts;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 

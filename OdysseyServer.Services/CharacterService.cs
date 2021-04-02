@@ -84,15 +84,14 @@ namespace OdysseyServer.Services
 
         public async Task<CharacterUpdateResponse> UpdateCharacterAsync(CharacterUpdateRequest requestObject)
         {
-            CharacterDbo characterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(requestObject.Character.Id);
-            
-            _mapper.Map(requestObject.Character, characterDbo);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.Character.Update(_mapper.Map<CharacterDbo>(requestObject.Character));
 
             CharacterUpdateResponse result = new CharacterUpdateResponse
             {
                 Character = new Character()
             };
+            CharacterDbo characterDbo = await _unitOfWork.Character.GetCharacterByIdAsync(requestObject.Character.Id);
+
             _mapper.Map(GetMaxLevelAbilities(characterDbo.Abilities), result.Character.Abilities);
 
             return result;

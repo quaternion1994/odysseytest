@@ -1,15 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Messages.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="Messages.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +16,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Messages.proto" />
   </ItemGroup>
 
 </Project>

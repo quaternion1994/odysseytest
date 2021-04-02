@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OdysseyServer.ApiClient\OdysseyServer.ApiClient.csproj" />
-    <ProjectReference Include="..\OdysseyServer.Common\OdysseyServer.Common.csproj" />
     <ProjectReference Include="..\OdysseyServer.Persistence\OdysseyServer.Persistence.csproj" />
   </ItemGroup>
 
